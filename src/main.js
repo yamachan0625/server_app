@@ -15,7 +15,12 @@ const connectOption = {
   dbName: 'testdb',
 };
 
-mongoose.connect('mongodb://db:27017', connectOption);
+const mongoDB =
+  process.env.NODE_ENV === 'production'
+    ? 'mongodb://13.231.189.84:27017'
+    : 'mongodb://db:27017';
+
+mongoose.connect(mongoDB, connectOption);
 const db = mongoose.connection;
 db.once('open', () => {
   console.log('successfully connected to mongoDB');
