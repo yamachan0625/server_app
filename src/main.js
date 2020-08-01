@@ -36,6 +36,11 @@ app.use(
   })
 );
 
+//ELB用のヘルスチェックパス
+app.get('/health', function (req, res) {
+  res.status(200).send('instance is healthy');
+});
+
 app.listen(app.get('port'), () => {
   console.log(
     `The Express.js server has started and is listening on port number: ${app.get(
