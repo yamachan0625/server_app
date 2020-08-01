@@ -23,7 +23,7 @@ const mongoDB =
 mongoose.connect(mongoDB, connectOption);
 const db = mongoose.connection;
 db.once('open', () => {
-  console.log('successfully connected to mongoDB');
+  console.log('successfully connected to mongoDB!');
 });
 
 app.set('port', 3000);

@@ -29,7 +29,7 @@ jobs:
             sudo pip install awsebcli --upgrade
       - run:
           name: Deploying
-          command: eb deploy [created-my-env-name]
+          command: eb deploy [portfolio_server]
 
 # workflow(jobを順番どうりに実行する一連のフロー)の定義
 workflows:
