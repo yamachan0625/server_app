@@ -1,6 +1,8 @@
 'use strict';
 
 const express = require('express');
+const expressPlayground = require('graphql-playground-middleware-express')
+  .default;
 const mongoose = require('mongoose');
 const app = express();
 const schema = require('./schema/schema');
@@ -35,6 +37,8 @@ app.use(
     graphiql: true,
   })
 );
+
+app.get('/playground', expressPlayground({ endpoint: '/graphql' }));
 
 //ELB用のヘルスチェックパス
 //パス/grapqlがstatus code 400を返す為
