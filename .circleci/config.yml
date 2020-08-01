@@ -1,0 +1,46 @@
+# circleciのバージョン
+version: 2
+
+# jobの設定
+jobs:
+  # deployという名前のjobの定義を以下記述
+  deploy:
+    # circleciが検証用に用意するコンテナ内でのソースコードの置き場
+    working_directory: ~/app
+
+    # circleciが建てるdocker imageの種類
+    docker:
+      - image: circleci/node:12
+
+    # deployというjobを行うためにcircleciのdocker内で動作させるコマンド
+    steps:
+      - checkout
+      - run: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+      - run:
+          name: Installing EB CLI
+          working_directory: /
+          command: |
+            sudo apt-get -y -qq update
+            sudo apt-get install python-pip python-dev build-essential
+            sudo pip install awsebcli --upgrade
+      - run:
+          name: Deploying
+          command: eb deploy [created-my-env-name]
+
+# workflow(jobを順番どうりに実行する一連のフロー)の定義
+workflows:
+  version: 2
+  # workflowの名前をbuildとする
+  build:
+    # build workflowで実行するjobの順番
+    jobs:
+      - deploy:
+          # deploy jobを行うのは、Githubのmasterブランチにpushが行われたときのみ
+          filters:
+            branches:
+              only:
+                - master

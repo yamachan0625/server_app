@@ -37,6 +37,7 @@ app.use(
 );
 
 //ELB用のヘルスチェックパス
+//パス/grapqlがstatus code 400を返す為
 app.get('/health', function (req, res) {
   res.status(200).send('instance is healthy');
 });
