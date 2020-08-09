@@ -9,17 +9,27 @@ const schema = require('./schema/schema');
 const { graphqlHTTP } = require('express-graphql');
 require('dotenv').config();
 
+const db_user =
+  process.env.NODE_ENV === 'production'
+    ? process.env.PRO_DB_USER
+    : process.env.DEV_DB_USER;
+
+const db_pass =
+  process.env.NODE_ENV === 'production'
+    ? process.env.PRO_DB_PASS
+    : process.env.DEV_DB_PASS;
+
 const connectOption = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  user: process.env.DB_USER,
-  pass: process.env.DB_PASS,
+  user: db_user,
+  pass: db_pass,
   dbName: 'testdb',
 };
 
 const mongoDB =
   process.env.NODE_ENV === 'production'
-    ? 'mongodb://13.231.189.84:27017'
+    ? 'mongodb://13.113.155.206:27017'
     : 'mongodb://db:27017';
 
 mongoose.connect(mongoDB, connectOption);
