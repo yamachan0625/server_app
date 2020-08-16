@@ -1,6 +1,7 @@
 const graphql = require('graphql');
 const Movie = require('../models/movie');
 const Director = require('../models/director');
+const User = require('../models/user');
 
 const {
   GraphQLObjectType,
@@ -43,11 +44,26 @@ const DirectorType = new GraphQLObjectType({
   }),
 });
 
+const UserType = new GraphQLObjectType({
+  name: 'User',
+  fields: () => ({
+    id: { type: GraphQLID },
+    email: { type: GraphQLString },
+    password: { type: GraphQLString },
+  }),
+});
+
 //query
 //{movie(id:"movie id"){id,name}}といった形で取得
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
   fields: {
+    users: {
+      type: new GraphQLList(UserType),
+      resolve(parents, args) {
+        return User.find({});
+      },
+    },
     movie: {
       type: MovieType,
       args: { id: { type: GraphQLString } },
@@ -80,6 +96,20 @@ const RootQuery = new GraphQLObjectType({
 const Mutation = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
+    signup: {
+      type: UserType,
+      args: {
+        email: { type: GraphQLString },
+        password: { type: GraphQLString },
+      },
+      resolve(parent, args) {
+        const user = new User({
+          email: args.email,
+          password: args.password,
+        });
+        return user.save();
+      },
+    },
     addMovie: {
       type: MovieType,
       args: {
@@ -88,7 +118,7 @@ const Mutation = new GraphQLObjectType({
         directorId: { type: GraphQLID },
       },
       resolve(parents, args) {
-        let movie = new Movie({
+        const movie = new Movie({
           name: args.name,
           genre: args.genre,
           directorId: args.directorId,

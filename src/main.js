@@ -38,7 +38,7 @@ db.once('open', () => {
   console.log('successfully connected to mongoDB!');
 });
 
-app.set('port', 3000);
+app.set('port', 4000);
 
 app.use(
   '/graphql',
