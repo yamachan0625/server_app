@@ -5,6 +5,7 @@ const expressPlayground = require('graphql-playground-middleware-express')
   .default;
 const mongoose = require('mongoose');
 const app = express();
+const cookieParser = require('cookie-parser');
 const schema = require('./schema/schema');
 const { graphqlHTTP } = require('express-graphql');
 require('dotenv').config();
@@ -37,6 +38,8 @@ const db = mongoose.connection;
 db.once('open', () => {
   console.log('successfully connected to mongoDB!');
 });
+
+app.use(cookieParser());
 
 app.set('port', 4000);
 

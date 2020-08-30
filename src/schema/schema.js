@@ -1,4 +1,7 @@
 const graphql = require('graphql');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
 const Movie = require('../models/movie');
 const Director = require('../models/director');
 const User = require('../models/user');
@@ -53,8 +56,15 @@ const UserType = new GraphQLObjectType({
   }),
 });
 
-//query
-//{movie(id:"movie id"){id,name}}といった形で取得
+const AuthsType = new GraphQLObjectType({
+  name: 'Auth',
+  fields: () => ({
+    userId: { type: GraphQLID },
+    token: { type: GraphQLString },
+    tokenExpiration: { type: GraphQLInt },
+  }),
+});
+
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
   fields: {
@@ -102,12 +112,61 @@ const Mutation = new GraphQLObjectType({
         email: { type: GraphQLString },
         password: { type: GraphQLString },
       },
-      resolve(parent, args) {
-        const user = new User({
-          email: args.email,
-          password: args.password,
-        });
-        return user.save();
+      async resolve(parent, args, req) {
+        try {
+          const existingUser = await User.findOne({
+            email: args.email,
+          });
+
+          if (existingUser) {
+            throw new Error('User exist already.');
+          }
+
+          const hashedPassword = await bcrypt.hash(args.password, 12);
+
+          const user = new User({
+            email: args.email,
+            password: hashedPassword,
+          });
+
+          return user.save();
+        } catch (error) {
+          throw error;
+        }
+      },
+    },
+    login: {
+      type: AuthsType,
+      args: {
+        email: { type: GraphQLString },
+        password: { type: GraphQLString },
+      },
+      async resolve(parent, args, { res }) {
+        try {
+          const user = await User.findOne({ email: args.email });
+
+          if (!user) {
+            return new Error('User does not exist!');
+          }
+
+          const isEqual = await bcrypt.compare(args.password, user.password);
+
+          if (!isEqual) {
+            throw new Error('Password is incorrct!');
+          }
+
+          const token = jwt.sign(
+            { userId: user.id, email: user.email },
+            process.env.SECLET_KEY,
+            { expiresIn: '1h' }
+          );
+
+          res.cookie('token', token, { httpOnly: true });
+
+          return { userId: user.id, token: token, tokenExpiration: 1 };
+        } catch (error) {
+          throw error;
+        }
       },
     },
     addMovie: {
