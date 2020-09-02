@@ -1,13 +1,14 @@
 'use strict';
 
 const express = require('express');
-const expressPlayground = require('graphql-playground-middleware-express')
-  .default;
 const mongoose = require('mongoose');
 const app = express();
 const cookieParser = require('cookie-parser');
-const schema = require('./schema/schema');
-const { graphqlHTTP } = require('express-graphql');
+const jwt = require('jsonwebtoken');
+const { ApolloServer } = require('apollo-server-express');
+const typeDefs = require('./typeDefs/index');
+const resolvers = require('./resolvers/index');
+
 require('dotenv').config();
 
 const db_user =
@@ -34,7 +35,9 @@ const mongoDB =
     : 'mongodb://db:27017';
 
 mongoose.connect(mongoDB, connectOption);
+
 const db = mongoose.connection;
+
 db.once('open', () => {
   console.log('successfully connected to mongoDB!');
 });
@@ -43,15 +46,36 @@ app.use(cookieParser());
 
 app.set('port', 4000);
 
-app.use(
-  '/graphql',
-  graphqlHTTP({
-    schema,
-    graphiql: true,
-  })
-);
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: async ({ req, res }) => {
+    // リクエストにjwttokenが含まれているかチェック
+    const authToken = req.cookies.token;
+    if (!authToken) {
+      req.isAuth = false;
+    }
 
-app.get('/playground', expressPlayground({ endpoint: '/graphql' }));
+    const decodedToken = (() => {
+      try {
+        return jwt.verify(authToken, process.env.SECLET_KEY);
+      } catch (error) {
+        req.isAuth = false;
+        return { userId: '' };
+      }
+    })();
+
+    req.isAuth = true;
+    req.userId = decodedToken.userId;
+
+    return {
+      req: req,
+      res: res,
+    };
+  },
+});
+
+server.applyMiddleware({ app });
 
 //ELB用のヘルスチェックパス
 //パス/grapqlがstatus code 400を返す為
