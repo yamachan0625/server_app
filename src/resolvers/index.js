@@ -7,6 +7,14 @@ const User = require('../models/user');
 
 const resolvers = {
   Query: {
+    user: async (_, args, { req }) => {
+      const users = await User.findById(req.userId);
+      if (users) {
+        return users;
+      } else {
+        return {};
+      }
+    },
     users: async () => {
       const users = await User.find({});
       return users;
@@ -98,10 +106,7 @@ const resolvers = {
           { expiresIn: '1h' }
         );
 
-        res.cookie('token', token, { httpOnly: true });
-
-        return { id: user.id, email: user.email, password: user.password };
-        // return { userId: user.id, token: token, tokenExpiration: 1 };
+        return { userId: user.id, token: token };
       } catch (error) {
         throw error;
       }
