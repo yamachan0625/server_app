@@ -58,19 +58,20 @@ const server = new ApolloServer({
 
     const decodedToken = (() => {
       try {
-        return jwt.verify(authToken, process.env.SECLET_KEY);
+        const token = jwt.verify(authToken, process.env.SECLET_KEY);
+        req.isAuth = true;
+        return token;
       } catch (error) {
         req.isAuth = false;
         return { userId: '' };
       }
     })();
 
-    req.isAuth = true;
     req.userId = decodedToken.userId;
 
     return {
-      req: req,
-      res: res,
+      req,
+      res,
     };
   },
 });

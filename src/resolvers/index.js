@@ -8,9 +8,9 @@ const User = require('../models/user');
 const resolvers = {
   Query: {
     user: async (_, args, { req }) => {
-      const users = await User.findById(req.userId);
-      if (users) {
-        return users;
+      const user = await User.findById(req.userId);
+      if (user) {
+        return user;
       } else {
         return {};
       }
