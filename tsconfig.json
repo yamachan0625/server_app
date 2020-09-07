@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "sourceMap": true,
+    "module": "commonjs",
+    "target": "es2019",
+    "moduleResolution": "node",
+    "removeComments": true,
+    "rootDir": "./src",
+    "esModuleInterop": true,
+    "typeRoots": ["./custom_typings", "./node_modules/@types"]
+  }
+}

@@ -1,11 +1,11 @@
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
-const Movie = require('../models/movie');
-const Director = require('../models/director');
-const User = require('../models/user');
+import { Movie } from '../models/movie';
+import { Director } from '../models/director';
+import { User } from '../models/user';
 
-const resolvers = {
+export const resolvers = {
   Query: {
     user: async (_, args, { req }) => {
       const user = await User.findById(req.userId);
@@ -113,5 +113,3 @@ const resolvers = {
     },
   },
 };
-
-module.exports = resolvers;
