@@ -1,6 +1,6 @@
-const { gql } = require('apollo-server-express');
+import { gql } from 'apollo-server-express';
 
-const typeDefs = gql`
+export const typeDefs = gql`
   type Director {
     id: ID!
     name: String
@@ -43,5 +43,3 @@ const typeDefs = gql`
     addDirector(name: String, age: Int): Director!
   }
 `;
-
-module.exports = typeDefs;

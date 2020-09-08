@@ -1,15 +1,14 @@
-'use strict';
-
-const express = require('express');
-const mongoose = require('mongoose');
-const app = express();
-const cookieParser = require('cookie-parser');
-const jwt = require('jsonwebtoken');
-const { ApolloServer } = require('apollo-server-express');
-const typeDefs = require('./typeDefs/index');
-const resolvers = require('./resolvers/index');
+import express, { Request, Response } from 'express';
+import mongoose from 'mongoose';
+import cookieParser from 'cookie-parser';
+import { ApolloServer } from 'apollo-server-express';
+import { typeDefs } from './typeDefs/index';
+import { resolvers } from './resolvers/index';
+import { context } from './contexts/index';
 
 require('dotenv').config();
+
+const app = express();
 
 const db_user =
   process.env.NODE_ENV === 'production'
@@ -49,37 +48,14 @@ app.set('port', 4000);
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: async ({ req, res }) => {
-    // リクエストにjwttokenが含まれているかチェック
-    const authToken = req.cookies.token;
-    if (!authToken) {
-      req.isAuth = false;
-    }
-
-    const decodedToken = (() => {
-      try {
-        return jwt.verify(authToken, process.env.SECLET_KEY);
-      } catch (error) {
-        req.isAuth = false;
-        return { userId: '' };
-      }
-    })();
-
-    req.isAuth = true;
-    req.userId = decodedToken.userId;
-
-    return {
-      req: req,
-      res: res,
-    };
-  },
+  context,
 });
 
 server.applyMiddleware({ app });
 
 //ELB用のヘルスチェックパス
 //パス/grapqlがstatus code 400を返す為
-app.get('/health', function (req, res) {
+app.get('/health', function (req: Request, res: Response) {
   res.status(200).send('instance is healthy');
 });
 
