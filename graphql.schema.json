@@ -165,7 +165,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "RefreshTokens",
+        "name": "RefreshToken",
         "description": null,
         "fields": [
           {
@@ -267,13 +267,9 @@
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "RefreshTokens",
-                  "ofType": null
-                }
+                "kind": "OBJECT",
+                "name": "RefreshToken",
+                "ofType": null
               }
             },
             "isDeprecated": false,
@@ -308,6 +304,22 @@
           },
           {
             "name": "token",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "refreshToken",
             "description": null,
             "args": [],
             "type": {

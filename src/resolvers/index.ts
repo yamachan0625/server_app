@@ -94,7 +94,7 @@ const Mutation: MutationResolvers = {
       const user = new User({
         email: args.email,
         password: hashedPassword,
-        refreshTokens: [{ hash: refreshTokenHash, expiry: refreshTokenExpiry }],
+        refreshToken: { hash: refreshTokenHash, expiry: refreshTokenExpiry },
       });
 
       await user.save();
@@ -105,18 +105,17 @@ const Mutation: MutationResolvers = {
         { expiresIn: '1m' }
       );
 
-      return { userId: user.id, token: token };
+      return { userId: user.id, token: token, refreshToken: refreshToken };
     } catch (error) {
       throw error;
     }
   },
-  // @ts-ignore: エラー原因不明
   login: async (_, args) => {
     try {
       const user = await User.findOne({ email: args.email });
 
       if (!user) {
-        return new Error('User does not exist!');
+        throw new Error('User does not exist!');
       }
 
       const isEqual = await bcrypt.compare(args.password, user.password);
@@ -141,14 +140,14 @@ const Mutation: MutationResolvers = {
       const refreshTokenExpiry = new Date(Date.now() + 60 * 60 * 24 * 7 * 1000);
 
       // ユーザーのrefreshTokenを更新する
-      user.refreshTokens.push({
+      user.refreshToken = {
         hash: refreshTokenHash,
         expiry: refreshTokenExpiry,
-      });
+      };
 
       await user.save();
 
-      return { userId: user.id, token: token };
+      return { userId: user.id, token: token, refreshToken: refreshToken };
     } catch (error) {
       throw error;
     }

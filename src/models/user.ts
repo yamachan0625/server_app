@@ -5,12 +5,10 @@ const Scema = mongoose.Schema;
 const userSchema = new Scema({
   email: String,
   password: String,
-  refreshTokens: [
-    {
-      hash: String,
-      expiry: Date,
-    },
-  ],
+  refreshToken: {
+    hash: String,
+    expiry: Date,
+  },
 });
 
 export const User = mongoose.model('User', userSchema);

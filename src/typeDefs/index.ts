@@ -16,7 +16,7 @@ export const typeDefs = gql`
     directorId: String
   }
 
-  type RefreshTokens {
+  type RefreshToken {
     hash: String!
     expiry: Date!
   }
@@ -25,12 +25,13 @@ export const typeDefs = gql`
     id: ID!
     email: String!
     password: String!
-    refreshTokens: [RefreshTokens]!
+    refreshTokens: RefreshToken!
   }
 
   type Auth {
     userId: ID!
     token: String!
+    refreshToken: String!
   }
 
   type Query {

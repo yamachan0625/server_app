@@ -29,8 +29,8 @@ export type Movie = {
   directorId?: Maybe<Scalars['String']>;
 };
 
-export type RefreshTokens = {
-  __typename?: 'RefreshTokens';
+export type RefreshToken = {
+  __typename?: 'RefreshToken';
   hash: Scalars['String'];
   expiry: Scalars['Date'];
 };
@@ -40,13 +40,14 @@ export type User = {
   id: Scalars['ID'];
   email: Scalars['String'];
   password: Scalars['String'];
-  refreshTokens: Array<Maybe<RefreshTokens>>;
+  refreshTokens: RefreshToken;
 };
 
 export type Auth = {
   __typename?: 'Auth';
   userId: Scalars['ID'];
   token: Scalars['String'];
+  refreshToken: Scalars['String'];
 };
 
 export type Query = {
@@ -196,7 +197,7 @@ export type ResolversTypes = {
   String: ResolverTypeWrapper<Scalars['String']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   Movie: ResolverTypeWrapper<Movie>;
-  RefreshTokens: ResolverTypeWrapper<RefreshTokens>;
+  RefreshToken: ResolverTypeWrapper<RefreshToken>;
   User: ResolverTypeWrapper<User>;
   Auth: ResolverTypeWrapper<Auth>;
   Query: ResolverTypeWrapper<{}>;
@@ -212,7 +213,7 @@ export type ResolversParentTypes = {
   String: Scalars['String'];
   Int: Scalars['Int'];
   Movie: Movie;
-  RefreshTokens: RefreshTokens;
+  RefreshToken: RefreshToken;
   User: User;
   Auth: Auth;
   Query: {};
@@ -239,7 +240,7 @@ export type MovieResolvers<ContextType = any, ParentType extends ResolversParent
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type RefreshTokensResolvers<ContextType = any, ParentType extends ResolversParentTypes['RefreshTokens'] = ResolversParentTypes['RefreshTokens']> = {
+export type RefreshTokenResolvers<ContextType = any, ParentType extends ResolversParentTypes['RefreshToken'] = ResolversParentTypes['RefreshToken']> = {
   hash?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   expiry?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
@@ -249,13 +250,14 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   password?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  refreshTokens?: Resolver<Array<Maybe<ResolversTypes['RefreshTokens']>>, ParentType, ContextType>;
+  refreshTokens?: Resolver<ResolversTypes['RefreshToken'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type AuthResolvers<ContextType = any, ParentType extends ResolversParentTypes['Auth'] = ResolversParentTypes['Auth']> = {
   userId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  refreshToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
@@ -281,7 +283,7 @@ export type Resolvers<ContextType = any> = {
   Date?: GraphQLScalarType;
   Director?: DirectorResolvers<ContextType>;
   Movie?: MovieResolvers<ContextType>;
-  RefreshTokens?: RefreshTokensResolvers<ContextType>;
+  RefreshToken?: RefreshTokenResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   Auth?: AuthResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
