@@ -1,12 +1,5 @@
 import jwt from 'jsonwebtoken';
 
-interface Params {
-  userId: string;
-  email: string;
-  iat?: number;
-  exp?: number;
-}
-
 export const context = async ({ req, res }) => {
   // リクエストにjwttokenが含まれているかチェック
   const authToken: string = req.cookies.token;
@@ -14,9 +7,9 @@ export const context = async ({ req, res }) => {
     req.isAuth = false;
   }
 
-  const decodedToken: Params = (() => {
+  const decodedToken: any = (() => {
     try {
-      const params: Params = jwt.verify(authToken, process.env.SECLET_KEY);
+      const params = jwt.verify(authToken, process.env.SECLET_KEY);
       req.isAuth = true;
       return params;
     } catch (error) {
