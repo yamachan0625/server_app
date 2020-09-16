@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 import { ApolloServer } from 'apollo-server-express';
+import { altairExpress } from 'altair-express-middleware';
 import { typeDefs } from './typeDefs/index';
 import { resolvers } from './resolvers/index';
 import { context } from './contexts/index';
@@ -58,6 +59,14 @@ server.applyMiddleware({ app });
 app.get('/health', function (req: Request, res: Response) {
   res.status(200).send('instance is healthy');
 });
+
+app.use(
+  '/altair',
+  altairExpress({
+    endpointURL: '/graphql',
+    subscriptionsEndpoint: `ws://localhost:4000/subscriptions`,
+  })
+);
 
 app.listen(app.get('port'), () => {
   console.log(
