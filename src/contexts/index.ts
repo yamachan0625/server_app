@@ -1,24 +1,83 @@
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+import { v4 as uuidv4 } from 'uuid';
+
+import { User } from '../models/user';
+
+const remakeTokens = async (req, res) => {
+  req.isAuth = false;
+  req.userId = '';
+
+  const { refreshToken, userId } = req.cookies;
+
+  const foundUser = await User.findById(userId);
+
+  const isMatch: boolean = bcrypt.compareSync(
+    refreshToken,
+    foundUser.refreshToken.hash
+  );
+
+  const isValid: boolean = foundUser.refreshToken.expiry > Date.now();
+
+  if (isMatch && isValid) {
+    const newRefreshToken = uuidv4();
+
+    res.cookie('refreshToken', newRefreshToken, {
+      httpOnly: true,
+      maxAge: 60 * 60 * 24 * 7 * 1000,
+    });
+
+    const newRefreshTokenHash = await bcrypt.hash(newRefreshToken, 10);
+
+    const newRefreshTokenExpiry = new Date(
+      Date.now() + 60 * 60 * 24 * 7 * 1000
+    );
+
+    foundUser.refreshToken = {
+      hash: newRefreshTokenHash,
+      expiry: newRefreshTokenExpiry,
+    };
+
+    await foundUser.save();
+
+    const newToken = jwt.sign(
+      { userId: foundUser.id, email: foundUser.email },
+      process.env.SECLET_KEY,
+      { expiresIn: '1m' }
+    );
+
+    res.cookie('token', newToken, {
+      maxAge: 60 * 1000,
+      httpOnly: true,
+    });
+
+    req.isAuth = true;
+    req.userId = userId;
+  }
+};
 
 export const context = async ({ req, res }) => {
-  // リクエストにjwttokenが含まれているかチェック
-  const authToken: string = req.cookies.token;
-  if (!authToken) {
-    req.isAuth = false;
-  }
+  const { token, refreshToken, userId } = req.cookies;
 
-  const decodedToken: any = (() => {
+  if (token) {
     try {
-      const params = jwt.verify(authToken, process.env.SECLET_KEY);
+      const decodedToken: any = jwt.verify(token, process.env.SECLET_KEY);
       req.isAuth = true;
-      return params;
+      req.userId = decodedToken.userId;
     } catch (error) {
-      req.isAuth = false;
-      return { userId: '', email: '' };
+      // tokenがデコードできなかった場合トークンを再発行する
+      await remakeTokens(req, res);
     }
-  })();
-
-  req.userId = decodedToken.userId;
+  } else {
+    // refreshToken && userIdの場合トークンを再発行する
+    if (refreshToken && userId) {
+      await remakeTokens(req, res);
+    } else {
+      // どちらかでも欠けてた場合再ログインさせたい
+      req.isAuth = false;
+      req.userId = '';
+    }
+  }
 
   return {
     req,

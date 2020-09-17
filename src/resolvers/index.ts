@@ -70,7 +70,7 @@ const Mutation: MutationResolvers = {
     });
     return director.save();
   },
-  signup: async (_, args) => {
+  signup: async (_, args, { res }) => {
     try {
       const existingUser = await User.findOne({
         email: args.email,
@@ -84,6 +84,11 @@ const Mutation: MutationResolvers = {
 
       // refreshtokenをuuidv4を利用しランダムで作成
       const refreshToken = uuidv4();
+
+      res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        maxAge: 60 * 60 * 24 * 7 * 1000,
+      });
 
       // refreshTokenのハッシュ化
       const refreshTokenHash = await bcrypt.hash(refreshToken, 10);
@@ -105,12 +110,17 @@ const Mutation: MutationResolvers = {
         { expiresIn: '1m' }
       );
 
+      res.cookie('token', token, {
+        maxAge: 60 * 1000,
+        httpOnly: true,
+      });
+
       return { userId: user.id, token: token, refreshToken: refreshToken };
     } catch (error) {
       throw error;
     }
   },
-  login: async (_, args) => {
+  login: async (_, args, { res }) => {
     try {
       const user = await User.findOne({ email: args.email });
 
@@ -130,8 +140,18 @@ const Mutation: MutationResolvers = {
         { expiresIn: '1m' }
       );
 
+      res.cookie('token', token, {
+        maxAge: 60 * 1000,
+        httpOnly: true,
+      });
+
       // refreshtokenをuuidv4を利用しランダムで作成
       const refreshToken = uuidv4();
+
+      res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        maxAge: 60 * 60 * 24 * 7 * 1000,
+      });
 
       // refreshTokenのハッシュ化
       const refreshTokenHash = await bcrypt.hash(refreshToken, 10);
