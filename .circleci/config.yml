@@ -26,7 +26,7 @@ jobs:
           command: |
             sudo apt-get -y -qq update
             sudo apt-get install python3-pip python3-dev build-essential
-            sudo pip install awsebcli --upgrade
+            sudo pip3 install awsebcli
       - run:
           name: Deploying
           command: eb deploy portfolio-server-dev
