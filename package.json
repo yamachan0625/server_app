@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "tsc": "tsc",
+    "dev": "ts-node src/main.ts",
     "start": "nodemon dist/main.js",
     "codegen": "graphql-codegen --config codegen.yml"
   },
@@ -13,11 +14,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "altair-express-middleware": "^2.5.0",
     "apollo-server-express": "^2.17.0",
     "bcryptjs": "^2.4.3",
     "connect": "^3.7.0",
     "cookie-parser": "^1.4.5",
-    "csurf": "^1.11.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-graphql": "^0.11.0",
@@ -26,7 +27,8 @@
     "graphql-playground-middleware-express": "^1.7.18",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.25",
-    "qs-middleware": "^1.0.3"
+    "qs-middleware": "^1.0.3",
+    "uuid": "^8.3.0"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "1.17.8",
@@ -38,6 +40,7 @@
     "@types/express": "^4.17.8",
     "@types/node": "^14.6.4",
     "nodemon": "^2.0.4",
+    "ts-node": "^9.0.0",
     "typescript": "^4.0.2"
   }
 }

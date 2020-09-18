@@ -1,17 +1,8 @@
-import {
-  GraphQLResolveInfo,
-  GraphQLScalarType,
-  GraphQLScalarTypeConfig,
-} from 'graphql';
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 import gql from 'graphql-tag';
 export type Maybe<T> = T | null;
-export type Exact<T extends { [key: string]: unknown }> = {
-  [K in keyof T]: T[K];
-};
-export type RequireFields<T, K extends keyof T> = {
-  [X in Exclude<keyof T, K>]?: T[X];
-} &
-  { [P in K]-?: NonNullable<T[P]> };
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -19,9 +10,9 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** The `Upload` scalar type represents a file upload. */
-  Upload: any;
+  Date: any;
 };
+
 
 export type Director = {
   __typename?: 'Director';
@@ -38,17 +29,25 @@ export type Movie = {
   directorId?: Maybe<Scalars['String']>;
 };
 
+export type RefreshToken = {
+  __typename?: 'RefreshToken';
+  hash: Scalars['String'];
+  expiry: Scalars['Date'];
+};
+
 export type User = {
   __typename?: 'User';
   id: Scalars['ID'];
-  email?: Maybe<Scalars['String']>;
-  password?: Maybe<Scalars['String']>;
+  email: Scalars['String'];
+  password: Scalars['String'];
+  refreshTokens: RefreshToken;
 };
 
 export type Auth = {
   __typename?: 'Auth';
   userId: Scalars['ID'];
   token: Scalars['String'];
+  refreshToken: Scalars['String'];
 };
 
 export type Query = {
@@ -61,35 +60,40 @@ export type Query = {
   directors?: Maybe<Array<Maybe<Director>>>;
 };
 
+
 export type QueryMovieArgs = {
   id?: Maybe<Scalars['ID']>;
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
-  signup: User;
-  login: Auth;
+  signup?: Maybe<Auth>;
+  login?: Maybe<Auth>;
   addMovoie: Movie;
   updateMovie: Movie;
   deleteMovie: Movie;
   addDirector: Director;
 };
 
+
 export type MutationSignupArgs = {
-  email?: Maybe<Scalars['String']>;
-  password?: Maybe<Scalars['String']>;
+  email: Scalars['String'];
+  password: Scalars['String'];
 };
 
+
 export type MutationLoginArgs = {
-  email?: Maybe<Scalars['String']>;
-  password?: Maybe<Scalars['String']>;
+  email: Scalars['String'];
+  password: Scalars['String'];
 };
+
 
 export type MutationAddMovoieArgs = {
   name: Scalars['String'];
   genre: Scalars['String'];
   directorId?: Maybe<Scalars['ID']>;
 };
+
 
 export type MutationUpdateMovieArgs = {
   id: Scalars['ID'];
@@ -98,21 +102,21 @@ export type MutationUpdateMovieArgs = {
   directorId?: Maybe<Scalars['Int']>;
 };
 
+
 export type MutationDeleteMovieArgs = {
   id: Scalars['ID'];
 };
+
 
 export type MutationAddDirectorArgs = {
   name?: Maybe<Scalars['String']>;
   age?: Maybe<Scalars['Int']>;
 };
 
-export enum CacheControlScope {
-  Public = 'PUBLIC',
-  Private = 'PRIVATE',
-}
+
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
+
 
 export type LegacyStitchingResolver<TResult, TParent, TContext, TArgs> = {
   fragment: string;
@@ -123,9 +127,7 @@ export type NewStitchingResolver<TResult, TParent, TContext, TArgs> = {
   selectionSet: string;
   resolve: ResolverFn<TResult, TParent, TContext, TArgs>;
 };
-export type StitchingResolver<TResult, TParent, TContext, TArgs> =
-  | LegacyStitchingResolver<TResult, TParent, TContext, TArgs>
-  | NewStitchingResolver<TResult, TParent, TContext, TArgs>;
+export type StitchingResolver<TResult, TParent, TContext, TArgs> = LegacyStitchingResolver<TResult, TParent, TContext, TArgs> | NewStitchingResolver<TResult, TParent, TContext, TArgs>;
 export type Resolver<TResult, TParent = {}, TContext = {}, TArgs = {}> =
   | ResolverFn<TResult, TParent, TContext, TArgs>
   | StitchingResolver<TResult, TParent, TContext, TArgs>;
@@ -151,25 +153,9 @@ export type SubscriptionResolveFn<TResult, TParent, TContext, TArgs> = (
   info: GraphQLResolveInfo
 ) => TResult | Promise<TResult>;
 
-export interface SubscriptionSubscriberObject<
-  TResult,
-  TKey extends string,
-  TParent,
-  TContext,
-  TArgs
-> {
-  subscribe: SubscriptionSubscribeFn<
-    { [key in TKey]: TResult },
-    TParent,
-    TContext,
-    TArgs
-  >;
-  resolve?: SubscriptionResolveFn<
-    TResult,
-    { [key in TKey]: TResult },
-    TContext,
-    TArgs
-  >;
+export interface SubscriptionSubscriberObject<TResult, TKey extends string, TParent, TContext, TArgs> {
+  subscribe: SubscriptionSubscribeFn<{ [key in TKey]: TResult }, TParent, TContext, TArgs>;
+  resolve?: SubscriptionResolveFn<TResult, { [key in TKey]: TResult }, TContext, TArgs>;
 }
 
 export interface SubscriptionResolverObject<TResult, TParent, TContext, TArgs> {
@@ -177,26 +163,12 @@ export interface SubscriptionResolverObject<TResult, TParent, TContext, TArgs> {
   resolve: SubscriptionResolveFn<TResult, any, TContext, TArgs>;
 }
 
-export type SubscriptionObject<
-  TResult,
-  TKey extends string,
-  TParent,
-  TContext,
-  TArgs
-> =
+export type SubscriptionObject<TResult, TKey extends string, TParent, TContext, TArgs> =
   | SubscriptionSubscriberObject<TResult, TKey, TParent, TContext, TArgs>
   | SubscriptionResolverObject<TResult, TParent, TContext, TArgs>;
 
-export type SubscriptionResolver<
-  TResult,
-  TKey extends string,
-  TParent = {},
-  TContext = {},
-  TArgs = {}
-> =
-  | ((
-      ...args: any[]
-    ) => SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>)
+export type SubscriptionResolver<TResult, TKey extends string, TParent = {}, TContext = {}, TArgs = {}> =
+  | ((...args: any[]) => SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>)
   | SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>;
 
 export type TypeResolveFn<TTypes, TParent = {}, TContext = {}> = (
@@ -205,19 +177,11 @@ export type TypeResolveFn<TTypes, TParent = {}, TContext = {}> = (
   info: GraphQLResolveInfo
 ) => Maybe<TTypes> | Promise<Maybe<TTypes>>;
 
-export type IsTypeOfResolverFn<T = {}> = (
-  obj: T,
-  info: GraphQLResolveInfo
-) => boolean | Promise<boolean>;
+export type IsTypeOfResolverFn<T = {}> = (obj: T, info: GraphQLResolveInfo) => boolean | Promise<boolean>;
 
 export type NextResolverFn<T> = () => Promise<T>;
 
-export type DirectiveResolverFn<
-  TResult = {},
-  TParent = {},
-  TContext = {},
-  TArgs = {}
-> = (
+export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs = {}> = (
   next: NextResolverFn<TResult>,
   parent: TParent,
   args: TArgs,
@@ -227,168 +191,105 @@ export type DirectiveResolverFn<
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
+  Date: ResolverTypeWrapper<Scalars['Date']>;
   Director: ResolverTypeWrapper<Director>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   String: ResolverTypeWrapper<Scalars['String']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   Movie: ResolverTypeWrapper<Movie>;
+  RefreshToken: ResolverTypeWrapper<RefreshToken>;
   User: ResolverTypeWrapper<User>;
-  Auth: ResolverTypeWrapper<Error | Auth>;
+  Auth: ResolverTypeWrapper<Auth>;
   Query: ResolverTypeWrapper<{}>;
   Mutation: ResolverTypeWrapper<{}>;
-  CacheControlScope: CacheControlScope;
-  Upload: ResolverTypeWrapper<Scalars['Upload']>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
+  Date: Scalars['Date'];
   Director: Director;
   ID: Scalars['ID'];
   String: Scalars['String'];
   Int: Scalars['Int'];
   Movie: Movie;
+  RefreshToken: RefreshToken;
   User: User;
   Auth: Auth;
   Query: {};
   Mutation: {};
-  Upload: Scalars['Upload'];
   Boolean: Scalars['Boolean'];
 };
 
-export type DirectorResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['Director'] = ResolversParentTypes['Director']
-> = {
+export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Date'], any> {
+  name: 'Date';
+}
+
+export type DirectorResolvers<ContextType = any, ParentType extends ResolversParentTypes['Director'] = ResolversParentTypes['Director']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   age?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type MovieResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['Movie'] = ResolversParentTypes['Movie']
-> = {
+export type MovieResolvers<ContextType = any, ParentType extends ResolversParentTypes['Movie'] = ResolversParentTypes['Movie']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   genre?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  directorId?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
+  directorId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type UserResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']
-> = {
+export type RefreshTokenResolvers<ContextType = any, ParentType extends ResolversParentTypes['RefreshToken'] = ResolversParentTypes['RefreshToken']> = {
+  hash?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  expiry?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  password?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  password?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  refreshTokens?: Resolver<ResolversTypes['RefreshToken'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type AuthResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['Auth'] = ResolversParentTypes['Auth']
-> = {
+export type AuthResolvers<ContextType = any, ParentType extends ResolversParentTypes['Auth'] = ResolversParentTypes['Auth']> = {
   userId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  refreshToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type QueryResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']
-> = {
+export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
-  users?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes['User']>>>,
-    ParentType,
-    ContextType
-  >;
-  movie?: Resolver<
-    Maybe<ResolversTypes['Movie']>,
-    ParentType,
-    ContextType,
-    RequireFields<QueryMovieArgs, never>
-  >;
-  director?: Resolver<
-    Maybe<ResolversTypes['Director']>,
-    ParentType,
-    ContextType
-  >;
-  movies?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes['Movie']>>>,
-    ParentType,
-    ContextType
-  >;
-  directors?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes['Director']>>>,
-    ParentType,
-    ContextType
-  >;
+  users?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
+  movie?: Resolver<Maybe<ResolversTypes['Movie']>, ParentType, ContextType, RequireFields<QueryMovieArgs, never>>;
+  director?: Resolver<Maybe<ResolversTypes['Director']>, ParentType, ContextType>;
+  movies?: Resolver<Maybe<Array<Maybe<ResolversTypes['Movie']>>>, ParentType, ContextType>;
+  directors?: Resolver<Maybe<Array<Maybe<ResolversTypes['Director']>>>, ParentType, ContextType>;
 };
 
-export type MutationResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']
-> = {
-  signup?: Resolver<
-    ResolversTypes['User'],
-    ParentType,
-    ContextType,
-    RequireFields<MutationSignupArgs, never>
-  >;
-  login?: Resolver<
-    ResolversTypes['Auth'],
-    ParentType,
-    ContextType,
-    RequireFields<MutationLoginArgs, never>
-  >;
-  addMovoie?: Resolver<
-    ResolversTypes['Movie'],
-    ParentType,
-    ContextType,
-    RequireFields<MutationAddMovoieArgs, 'name' | 'genre'>
-  >;
-  updateMovie?: Resolver<
-    ResolversTypes['Movie'],
-    ParentType,
-    ContextType,
-    RequireFields<MutationUpdateMovieArgs, 'id'>
-  >;
-  deleteMovie?: Resolver<
-    ResolversTypes['Movie'],
-    ParentType,
-    ContextType,
-    RequireFields<MutationDeleteMovieArgs, 'id'>
-  >;
-  addDirector?: Resolver<
-    ResolversTypes['Director'],
-    ParentType,
-    ContextType,
-    RequireFields<MutationAddDirectorArgs, never>
-  >;
+export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  signup?: Resolver<Maybe<ResolversTypes['Auth']>, ParentType, ContextType, RequireFields<MutationSignupArgs, 'email' | 'password'>>;
+  login?: Resolver<Maybe<ResolversTypes['Auth']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password'>>;
+  addMovoie?: Resolver<ResolversTypes['Movie'], ParentType, ContextType, RequireFields<MutationAddMovoieArgs, 'name' | 'genre'>>;
+  updateMovie?: Resolver<ResolversTypes['Movie'], ParentType, ContextType, RequireFields<MutationUpdateMovieArgs, 'id'>>;
+  deleteMovie?: Resolver<ResolversTypes['Movie'], ParentType, ContextType, RequireFields<MutationDeleteMovieArgs, 'id'>>;
+  addDirector?: Resolver<ResolversTypes['Director'], ParentType, ContextType, RequireFields<MutationAddDirectorArgs, never>>;
 };
-
-export interface UploadScalarConfig
-  extends GraphQLScalarTypeConfig<ResolversTypes['Upload'], any> {
-  name: 'Upload';
-}
 
 export type Resolvers<ContextType = any> = {
+  Date?: GraphQLScalarType;
   Director?: DirectorResolvers<ContextType>;
   Movie?: MovieResolvers<ContextType>;
+  RefreshToken?: RefreshTokenResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   Auth?: AuthResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
-  Upload?: GraphQLScalarType;
 };
+
 
 /**
  * @deprecated

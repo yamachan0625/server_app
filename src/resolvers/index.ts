@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { v4 as uuidv4 } from 'uuid';
 
 import { Movie } from '../models/movie';
 import { Director } from '../models/director';
@@ -31,7 +32,7 @@ const Query: QueryResolvers = {
     const movies = await Movie.find({});
     return movies;
   },
-  director: async (_, args) => {
+  director: async (_, args: any) => {
     const director = await Director.findById(args.id);
     return director;
   },
@@ -69,7 +70,7 @@ const Mutation: MutationResolvers = {
     });
     return director.save();
   },
-  signup: async (_, args) => {
+  signup: async (_, args, { res }) => {
     try {
       const existingUser = await User.findOne({
         email: args.email,
@@ -81,22 +82,50 @@ const Mutation: MutationResolvers = {
 
       const hashedPassword = await bcrypt.hash(args.password, 12);
 
+      // refreshtokenをuuidv4を利用しランダムで作成
+      const refreshToken = uuidv4();
+
+      res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        maxAge: 60 * 60 * 24 * 7 * 1000,
+      });
+
+      // refreshTokenのハッシュ化
+      const refreshTokenHash = await bcrypt.hash(refreshToken, 10);
+
+      // 有効期限を一週間に設定
+      const refreshTokenExpiry = new Date(Date.now() + 60 * 60 * 24 * 7 * 1000);
+
       const user = new User({
         email: args.email,
         password: hashedPassword,
+        refreshToken: { hash: refreshTokenHash, expiry: refreshTokenExpiry },
       });
 
-      return user.save();
+      await user.save();
+
+      const token = jwt.sign(
+        { userId: user.id, email: user.email },
+        process.env.SECLET_KEY,
+        { expiresIn: '1m' }
+      );
+
+      res.cookie('token', token, {
+        maxAge: 60 * 1000,
+        httpOnly: true,
+      });
+
+      return { userId: user.id, token: token, refreshToken: refreshToken };
     } catch (error) {
       throw error;
     }
   },
-  login: async (_, args) => {
+  login: async (_, args, { res }) => {
     try {
       const user = await User.findOne({ email: args.email });
 
       if (!user) {
-        return new Error('User does not exist!');
+        throw new Error('User does not exist!');
       }
 
       const isEqual = await bcrypt.compare(args.password, user.password);
@@ -108,10 +137,37 @@ const Mutation: MutationResolvers = {
       const token = jwt.sign(
         { userId: user.id, email: user.email },
         process.env.SECLET_KEY,
-        { expiresIn: '1h' }
+        { expiresIn: '1m' }
       );
 
-      return { userId: user.id, token: token };
+      res.cookie('token', token, {
+        maxAge: 60 * 1000,
+        httpOnly: true,
+      });
+
+      // refreshtokenをuuidv4を利用しランダムで作成
+      const refreshToken = uuidv4();
+
+      res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        maxAge: 60 * 60 * 24 * 7 * 1000,
+      });
+
+      // refreshTokenのハッシュ化
+      const refreshTokenHash = await bcrypt.hash(refreshToken, 10);
+
+      // 有効期限を一週間に設定
+      const refreshTokenExpiry = new Date(Date.now() + 60 * 60 * 24 * 7 * 1000);
+
+      // ユーザーのrefreshTokenを更新する
+      user.refreshToken = {
+        hash: refreshTokenHash,
+        expiry: refreshTokenExpiry,
+      };
+
+      await user.save();
+
+      return { userId: user.id, token: token, refreshToken: refreshToken };
     } catch (error) {
       throw error;
     }
