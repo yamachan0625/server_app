@@ -1,11 +1,8 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
-import dotenv from 'dotenv';
 
 import { User } from '../models/user';
-
-dotenv.config();
 
 const remakeTokens = async (req, res) => {
   req.isAuth = false;

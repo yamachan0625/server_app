@@ -7,11 +7,9 @@ exports.resolvers = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const uuid_1 = require("uuid");
-const dotenv_1 = __importDefault(require("dotenv"));
 const movie_1 = require("../models/movie");
 const director_1 = require("../models/director");
 const user_1 = require("../models/user");
-dotenv_1.default.config();
 const Query = {
     user: async (_, args, { req }) => {
         const user = await user_1.User.findById(req.userId);

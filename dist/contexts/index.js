@@ -7,9 +7,7 @@ exports.context = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const uuid_1 = require("uuid");
-const dotenv_1 = __importDefault(require("dotenv"));
 const user_1 = require("../models/user");
-dotenv_1.default.config();
 const remakeTokens = async (req, res) => {
     req.isAuth = false;
     req.userId = '';

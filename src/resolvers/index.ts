@@ -1,7 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
-import dotenv from 'dotenv';
 
 import { Movie } from '../models/movie';
 import { Director } from '../models/director';
@@ -11,8 +10,6 @@ import {
   MutationResolvers,
   Resolvers,
 } from '../generated/graphql';
-
-dotenv.config();
 
 const Query: QueryResolvers = {
   user: async (_, args, { req }) => {
