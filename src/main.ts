@@ -3,22 +3,24 @@ import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 import { ApolloServer } from 'apollo-server-express';
 import { altairExpress } from 'altair-express-middleware';
+import dotenv from 'dotenv';
+
 import { typeDefs } from './typeDefs/index';
 import { resolvers } from './resolvers/index';
 import { context } from './contexts/index';
 
-require('dotenv').config();
+dotenv.config();
 
 const app = express();
 
 const db_user =
   process.env.NODE_ENV === 'production'
-    ? 'process.env.PRO_DB_USER'
+    ? process.env.PRO_DB_USER
     : process.env.DEV_DB_USER;
 
 const db_pass =
   process.env.NODE_ENV === 'production'
-    ? 'process.env.PRO_DB_PASS'
+    ? process.env.PRO_DB_PASS
     : process.env.DEV_DB_PASS;
 
 const connectOption = {

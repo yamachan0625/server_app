@@ -8,16 +8,17 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const apollo_server_express_1 = require("apollo-server-express");
 const altair_express_middleware_1 = require("altair-express-middleware");
+const dotenv_1 = __importDefault(require("dotenv"));
 const index_1 = require("./typeDefs/index");
 const index_2 = require("./resolvers/index");
 const index_3 = require("./contexts/index");
-require('dotenv').config();
+dotenv_1.default.config();
 const app = express_1.default();
 const db_user = process.env.NODE_ENV === 'production'
-    ? 'process.env.PRO_DB_USER'
+    ? process.env.PRO_DB_USER
     : process.env.DEV_DB_USER;
 const db_pass = process.env.NODE_ENV === 'production'
-    ? 'process.env.PRO_DB_PASS'
+    ? process.env.PRO_DB_PASS
     : process.env.DEV_DB_PASS;
 const connectOption = {
     useNewUrlParser: true,
