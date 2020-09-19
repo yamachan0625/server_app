@@ -40,6 +40,8 @@ const server = new apollo_server_express_1.ApolloServer({
     typeDefs: index_1.typeDefs,
     resolvers: index_2.resolvers,
     context: index_3.context,
+    introspection: true,
+    playground: true,
 });
 server.applyMiddleware({ app });
 app.get('/health', function (req, res) {
