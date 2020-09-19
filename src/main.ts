@@ -47,6 +47,7 @@ app.use(cookieParser());
 app.set('port', 4000);
 
 const server = new ApolloServer({
+  playground: true,
   typeDefs,
   resolvers,
   context,
