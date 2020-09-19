@@ -13,12 +13,12 @@ const app = express();
 
 const db_user =
   process.env.NODE_ENV === 'production'
-    ? process.env.PRO_DB_USER
+    ? 'process.env.PRO_DB_USER'
     : process.env.DEV_DB_USER;
 
 const db_pass =
   process.env.NODE_ENV === 'production'
-    ? process.env.PRO_DB_PASS
+    ? 'process.env.PRO_DB_PASS'
     : process.env.DEV_DB_PASS;
 
 const connectOption = {
