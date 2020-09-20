@@ -5,9 +5,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { User } from '../models/user';
 
 const remakeTokens = async (req, res) => {
-  req.isAuth = false;
-  req.userId = '';
-
   const { refreshToken, userId } = req.cookies;
 
   const foundUser = await User.findById(userId);
@@ -58,6 +55,17 @@ const remakeTokens = async (req, res) => {
 
 export const context = async ({ req, res }) => {
   const { token, refreshToken, userId } = req.cookies;
+  req.isAuth = false;
+  req.userId = '';
+
+  if (!userId) {
+    res.clearCookie('token');
+    res.clearCookie('refreshToken');
+    return {
+      req,
+      res,
+    };
+  }
 
   if (token) {
     try {
@@ -72,10 +80,6 @@ export const context = async ({ req, res }) => {
     // refreshToken && userIdの場合トークンを再発行する
     if (refreshToken && userId) {
       await remakeTokens(req, res);
-    } else {
-      // どちらかでも欠けてた場合再ログインさせたい
-      req.isAuth = false;
-      req.userId = '';
     }
   }
 
