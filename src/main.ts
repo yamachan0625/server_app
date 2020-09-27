@@ -15,27 +15,21 @@ dotenv.config();
 
 const app = express();
 
-const db_user =
-  process.env.NODE_ENV === 'production'
-    ? process.env.PRO_DB_USER
-    : process.env.DEV_DB_USER;
-
-const db_pass =
-  process.env.NODE_ENV === 'production'
-    ? process.env.PRO_DB_PASS
-    : process.env.DEV_DB_PASS;
-
 const connectOption = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  user: db_user,
-  pass: db_pass,
-  dbName: 'testdb',
+  ...(process.env.NODE_ENV === 'production'
+    ? {}
+    : {
+        user: process.env.DEV_DB_USER,
+        pass: process.env.DEV_DB_PASS,
+        dbName: 'testdb',
+      }),
 };
 
 const mongoDB =
   process.env.NODE_ENV === 'production'
-    ? 'mongodb://13.113.155.206:27017'
+    ? `mongodb+srv://${process.env.PRO_DB_USER}:${process.env.PRO_DB_PASS}@portfolio.tzurq.mongodb.net/${process.env.PRO_DB_NAME}?retryWrites=true&w=majority`
     : 'mongodb://db:27017';
 
 mongoose.connect(mongoDB, connectOption);
@@ -46,8 +40,9 @@ db.once('open', () => {
   console.log('successfully connected to mongoDB!');
 });
 
+//データ収集定期実行
 cron.schedule('*/1 * * * *', () => {
-  // continueScreemshot();
+  continueScreemshot();
 });
 
 app.use(cookieParser());
@@ -58,6 +53,7 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   context,
+  // 下2つのオプションは本番環境でgraphiqlを使用するために必須
   introspection: true,
   playground: true,
 });
