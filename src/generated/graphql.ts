@@ -63,6 +63,7 @@ export type Query = {
   director?: Maybe<Director>;
   movies?: Maybe<Array<Maybe<Movie>>>;
   directors?: Maybe<Array<Maybe<Director>>>;
+  matters?: Maybe<Array<Maybe<Matter>>>;
 };
 
 
@@ -280,6 +281,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   director?: Resolver<Maybe<ResolversTypes['Director']>, ParentType, ContextType>;
   movies?: Resolver<Maybe<Array<Maybe<ResolversTypes['Movie']>>>, ParentType, ContextType>;
   directors?: Resolver<Maybe<Array<Maybe<ResolversTypes['Director']>>>, ParentType, ContextType>;
+  matters?: Resolver<Maybe<Array<Maybe<ResolversTypes['Matter']>>>, ParentType, ContextType>;
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {

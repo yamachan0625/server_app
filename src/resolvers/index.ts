@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Movie } from '../models/movie';
 import { Director } from '../models/director';
 import { User } from '../models/user';
+import { Matter } from '../models/matter';
 import {
   QueryResolvers,
   MutationResolvers,
@@ -39,6 +40,10 @@ const Query: QueryResolvers = {
   directors: async () => {
     const directors = await Director.find({});
     return directors;
+  },
+  matters: async () => {
+    const matters = await Matter.find({});
+    return matters;
   },
 };
 

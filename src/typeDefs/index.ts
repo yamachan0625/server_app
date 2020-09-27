@@ -45,6 +45,7 @@ export const typeDefs = gql`
     director: Director
     movies: [Movie]
     directors: [Director]
+    matters: [Matter]
   }
 
   type Mutation {
