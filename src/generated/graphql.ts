@@ -50,6 +50,11 @@ export type Auth = {
   refreshToken: Scalars['String'];
 };
 
+export type Matter = {
+  __typename?: 'Matter';
+  numberOfCase?: Maybe<Scalars['Int']>;
+};
+
 export type Query = {
   __typename?: 'Query';
   user?: Maybe<User>;
@@ -58,6 +63,7 @@ export type Query = {
   director?: Maybe<Director>;
   movies?: Maybe<Array<Maybe<Movie>>>;
   directors?: Maybe<Array<Maybe<Director>>>;
+  matters?: Maybe<Array<Maybe<Matter>>>;
 };
 
 
@@ -200,6 +206,7 @@ export type ResolversTypes = {
   RefreshToken: ResolverTypeWrapper<RefreshToken>;
   User: ResolverTypeWrapper<User>;
   Auth: ResolverTypeWrapper<Auth>;
+  Matter: ResolverTypeWrapper<Matter>;
   Query: ResolverTypeWrapper<{}>;
   Mutation: ResolverTypeWrapper<{}>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
@@ -216,6 +223,7 @@ export type ResolversParentTypes = {
   RefreshToken: RefreshToken;
   User: User;
   Auth: Auth;
+  Matter: Matter;
   Query: {};
   Mutation: {};
   Boolean: Scalars['Boolean'];
@@ -261,6 +269,11 @@ export type AuthResolvers<ContextType = any, ParentType extends ResolversParentT
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
+export type MatterResolvers<ContextType = any, ParentType extends ResolversParentTypes['Matter'] = ResolversParentTypes['Matter']> = {
+  numberOfCase?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   users?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
@@ -268,6 +281,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   director?: Resolver<Maybe<ResolversTypes['Director']>, ParentType, ContextType>;
   movies?: Resolver<Maybe<Array<Maybe<ResolversTypes['Movie']>>>, ParentType, ContextType>;
   directors?: Resolver<Maybe<Array<Maybe<ResolversTypes['Director']>>>, ParentType, ContextType>;
+  matters?: Resolver<Maybe<Array<Maybe<ResolversTypes['Matter']>>>, ParentType, ContextType>;
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
@@ -286,6 +300,7 @@ export type Resolvers<ContextType = any> = {
   RefreshToken?: RefreshTokenResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   Auth?: AuthResolvers<ContextType>;
+  Matter?: MatterResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
 };

@@ -4,10 +4,12 @@ import cookieParser from 'cookie-parser';
 import { ApolloServer } from 'apollo-server-express';
 import { altairExpress } from 'altair-express-middleware';
 import dotenv from 'dotenv';
+import cron from 'node-cron';
 
 import { typeDefs } from './typeDefs/index';
 import { resolvers } from './resolvers/index';
 import { context } from './contexts/index';
+import { continueScreemshot } from './scraping';
 
 dotenv.config();
 
@@ -42,6 +44,10 @@ const db = mongoose.connection;
 
 db.once('open', () => {
   console.log('successfully connected to mongoDB!');
+});
+
+cron.schedule('*/1 * * * *', () => {
+  continueScreemshot();
 });
 
 app.use(cookieParser());
