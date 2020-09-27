@@ -47,7 +47,7 @@ db.once('open', () => {
 });
 
 cron.schedule('*/1 * * * *', () => {
-  continueScreemshot();
+  // continueScreemshot();
 });
 
 app.use(cookieParser());
