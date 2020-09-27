@@ -27,6 +27,8 @@
     "graphql-playground-middleware-express": "^1.7.18",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.25",
+    "node-cron": "^2.0.3",
+    "puppeteer": "^5.3.1",
     "qs-middleware": "^1.0.3",
     "uuid": "^8.3.0"
   },
@@ -39,6 +41,7 @@
     "@graphql-codegen/typescript-resolvers": "^1.17.8",
     "@types/express": "^4.17.8",
     "@types/node": "^14.6.4",
+    "@types/puppeteer": "^3.0.2",
     "nodemon": "^2.0.4",
     "ts-node": "^9.0.0",
     "ts-node-dev": "^1.0.0-pre.62",
