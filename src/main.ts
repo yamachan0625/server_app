@@ -42,7 +42,7 @@ db.once('open', () => {
 
 //データ収集定期実行
 cron.schedule('*/1 * * * *', () => {
-  continueScreemshot();
+  // continueScreemshot();
 });
 
 app.use(cookieParser());
