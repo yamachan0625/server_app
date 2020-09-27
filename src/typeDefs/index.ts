@@ -34,6 +34,10 @@ export const typeDefs = gql`
     refreshToken: String!
   }
 
+  type Matter {
+    numberOfCase: Int
+  }
+
   type Query {
     user: User
     users: [User]
