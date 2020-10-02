@@ -49,8 +49,13 @@ export const typeDefs = gql`
   }
 
   type Mutation {
-    signup(email: String!, password: String!): Auth
-    login(email: String!, password: String!): Auth
+    signup(email: String!, password: String!): Auth!
+    login(email: String!, password: String!): Auth!
+    changePassword(
+      currentPassword: String!
+      newPassword: String!
+      confirmNewPassword: String!
+    ): User!
     addMovoie(name: String!, genre: String!, directorId: ID): Movie!
     updateMovie(id: ID!, name: String, genre: String, directorId: Int): Movie!
     deleteMovie(id: ID!): Movie!
