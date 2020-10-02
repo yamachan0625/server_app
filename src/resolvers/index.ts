@@ -15,11 +15,10 @@ import {
 const Query: QueryResolvers = {
   user: async (_, args, { req }) => {
     const user = await User.findById(req.userId);
-    if (user) {
-      return user;
-    } else {
-      return {};
+    if (!user) {
+      throw new Error('ユーザーは存在しません');
     }
+    return user;
   },
   users: async () => {
     const users = await User.find({});
@@ -82,7 +81,7 @@ const Mutation: MutationResolvers = {
       });
 
       if (existingUser) {
-        throw new Error('User exist already.');
+        throw new Error('ユーザーは既に存在します');
       }
 
       const hashedPassword = await bcrypt.hash(args.password, 12);
@@ -130,13 +129,13 @@ const Mutation: MutationResolvers = {
       const user = await User.findOne({ email: args.email });
 
       if (!user) {
-        throw new Error('User does not exist!');
+        throw new Error('ユーザーは存在しません');
       }
 
       const isEqual = await bcrypt.compare(args.password, user.password);
 
       if (!isEqual) {
-        throw new Error('Password is incorrct!');
+        throw new Error('パスワードが間違っています');
       }
 
       const token = jwt.sign(
@@ -176,6 +175,28 @@ const Mutation: MutationResolvers = {
     } catch (error) {
       throw error;
     }
+  },
+  changePassword: async (_, args, { req }) => {
+    const user = await User.findById(req.userId);
+    if (!user) {
+      throw new Error('ユーザーは存在しません');
+    }
+
+    const isEqual = await bcrypt.compare(args.currentPassword, user.password);
+    if (!isEqual) {
+      throw new Error('パスワードが間違っています');
+    }
+
+    const newPassword = (() => {
+      if (args.confirmNewPassword === args.newPassword) return args.newPassword;
+      throw new Error('パスワードが一致しません');
+    })();
+
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
+
+    user.password = hashedPassword;
+
+    return await user.save();
   },
 };
 

@@ -73,8 +73,9 @@ export type QueryMovieArgs = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  signup?: Maybe<Auth>;
-  login?: Maybe<Auth>;
+  signup: Auth;
+  login: Auth;
+  changePassword: User;
   addMovoie: Movie;
   updateMovie: Movie;
   deleteMovie: Movie;
@@ -91,6 +92,13 @@ export type MutationSignupArgs = {
 export type MutationLoginArgs = {
   email: Scalars['String'];
   password: Scalars['String'];
+};
+
+
+export type MutationChangePasswordArgs = {
+  currentPassword: Scalars['String'];
+  newPassword: Scalars['String'];
+  confirmNewPassword: Scalars['String'];
 };
 
 
@@ -285,8 +293,9 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  signup?: Resolver<Maybe<ResolversTypes['Auth']>, ParentType, ContextType, RequireFields<MutationSignupArgs, 'email' | 'password'>>;
-  login?: Resolver<Maybe<ResolversTypes['Auth']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password'>>;
+  signup?: Resolver<ResolversTypes['Auth'], ParentType, ContextType, RequireFields<MutationSignupArgs, 'email' | 'password'>>;
+  login?: Resolver<ResolversTypes['Auth'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password'>>;
+  changePassword?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationChangePasswordArgs, 'currentPassword' | 'newPassword' | 'confirmNewPassword'>>;
   addMovoie?: Resolver<ResolversTypes['Movie'], ParentType, ContextType, RequireFields<MutationAddMovoieArgs, 'name' | 'genre'>>;
   updateMovie?: Resolver<ResolversTypes['Movie'], ParentType, ContextType, RequireFields<MutationUpdateMovieArgs, 'id'>>;
   deleteMovie?: Resolver<ResolversTypes['Movie'], ParentType, ContextType, RequireFields<MutationDeleteMovieArgs, 'id'>>;
