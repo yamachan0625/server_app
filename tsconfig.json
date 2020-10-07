@@ -8,6 +8,7 @@
     "removeComments": true,
     "rootDir": "./src",
     "esModuleInterop": true,
+    "resolveJsonModule": true,
     "typeRoots": ["./custom_typings", "./node_modules/@types"]
   }
 }

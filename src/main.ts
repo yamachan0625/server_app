@@ -10,10 +10,21 @@ import { typeDefs } from './typeDefs/index';
 import { resolvers } from './resolvers/index';
 import { context } from './contexts/index';
 import { continueScreemshot } from './scraping';
+import { postQiita } from './postQiita';
 
 dotenv.config();
 
 const app = express();
+
+//データ収集定期実行
+cron.schedule('*/1 * * * *', () => {
+  // continueScreemshot();
+});
+
+//Qiitaの定期投稿
+cron.schedule('0 8 * * *', () => {
+  postQiita();
+});
 
 const connectOption = {
   useNewUrlParser: true,
@@ -38,11 +49,6 @@ const db = mongoose.connection;
 
 db.once('open', () => {
   console.log('successfully connected to mongoDB!');
-});
-
-//データ収集定期実行
-cron.schedule('*/1 * * * *', () => {
-  // continueScreemshot();
 });
 
 app.use(cookieParser());
