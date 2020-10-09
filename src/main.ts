@@ -26,11 +26,6 @@ cron.schedule('0 9 * * *', () => {
   continueScreemshot();
 });
 
-// scrapingのテスト
-cron.schedule('0 9 * * *', () => {
-  continueScreemshot();
-});
-
 //Qiitaの定期投稿
 cron.schedule('0 8 * * *', () => {
   postQiita();
