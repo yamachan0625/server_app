@@ -8,5 +8,13 @@
     {
       "ContainerPort": "4000"
     }
+  ],
+  "volumes": [
+    {
+      "name": "server-app!",
+      "host": {
+        "sourcePath": "/var/app/current/server-app!"
+      }
+    }
   ]
 }
