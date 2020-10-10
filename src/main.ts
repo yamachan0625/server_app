@@ -18,12 +18,12 @@ const app = express();
 
 //データ収集定期実行
 cron.schedule('*/1 * * * *', () => {
-  continueScreemshot();
+  // continueScreemshot();
   // postQiita();
 });
 
 // scrapingのテスト
-cron.schedule('0 12 * * *', () => {
+cron.schedule('0 14 * * *', () => {
   continueScreemshot();
 });
 
