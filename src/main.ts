@@ -22,15 +22,29 @@ cron.schedule('*/1 * * * *', () => {
   // postQiita();
 });
 
-// scrapingのテスト
-cron.schedule('0 0 16 * * *', () => {
-  continueScreemshot();
-});
-
 //Qiitaの定期投稿
-cron.schedule('0 8 * * *', () => {
-  postQiita();
-});
+cron.schedule(
+  '0 0 7 * * *',
+  () => {
+    postQiita();
+  },
+  {
+    scheduled: true,
+    timezone: 'Asia/Tokyo',
+  }
+);
+
+// scrapingのテスト
+cron.schedule(
+  '0 0 8 * * *',
+  () => {
+    continueScreemshot();
+  },
+  {
+    scheduled: true,
+    timezone: 'Asia/Tokyo',
+  }
+);
 
 const connectOption = {
   useNewUrlParser: true,
