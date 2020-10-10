@@ -18,7 +18,7 @@ const app = express();
 
 //データ収集定期実行
 cron.schedule('*/1 * * * *', () => {
-  // continueScreemshot();
+  continueScreemshot();
 });
 
 // scrapingのテスト
