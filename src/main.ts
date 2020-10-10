@@ -23,7 +23,7 @@ cron.schedule('*/1 * * * *', () => {
 });
 
 // scrapingのテスト
-cron.schedule('0 14 * * *', () => {
+cron.schedule('0 0 16 * * *', () => {
   continueScreemshot();
 });
 
