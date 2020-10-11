@@ -69,7 +69,7 @@ export const postQiita = async () => {
         const beforeWeek = now.subtract(1, 'week').format();
 
         return response.filter((data) => {
-          return beforeWeek < data.created_at && 0 <= data.likes_count;
+          return beforeWeek < data.created_at && 3 <= data.likes_count;
         });
       })();
 

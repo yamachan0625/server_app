@@ -9,7 +9,7 @@ import cron from 'node-cron';
 import { typeDefs } from './typeDefs/index';
 import { resolvers } from './resolvers/index';
 import { context } from './contexts/index';
-import { continueScreemshot } from './scraping';
+import { scrapingLevtechCareer } from './Scraping/LevtechCareer';
 import { postQiita } from './postQiita';
 
 dotenv.config();
@@ -38,7 +38,7 @@ cron.schedule(
 cron.schedule(
   '0 0 8 * * *',
   () => {
-    continueScreemshot();
+    scrapingLevtechCareer();
   },
   {
     scheduled: true,
