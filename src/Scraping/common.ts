@@ -40,7 +40,8 @@ export const jobkey = [
 
 export const puppeteerOptions = {
   fullPage: true, // フルページ読み込み
-  headless: false, // true:ブラウザ開かなくなる false:ブラウザ開く
+  headless: true, // true:ブラウザ開かなくなる false:ブラウザ開く
   args: ['--no-sandbox', '--disable-dev-shm-usage'],
+  ignoreDefaultArgs: ['--disable-extensions'],
   // slowMo: 100, // 動作を遅く
 };

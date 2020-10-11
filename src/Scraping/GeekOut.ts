@@ -1,5 +1,4 @@
 import puppeteer from 'puppeteer';
-import { Matter } from '../models/matter';
 import { Job } from '../models/job';
 import { serchKeyWord, jobkey, puppeteerOptions } from './common';
 

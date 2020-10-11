@@ -24,11 +24,11 @@ cron.schedule('*/1 * * * *', () => {
   // postQiita();
 });
 
-//Qiitaの定期投稿
+// スクレイピングテスト
 cron.schedule(
-  '0 0 7 * * *',
+  '0 0 6 * * *',
   () => {
-    postQiita();
+    scrapingGeekOut();
   },
   {
     scheduled: true,
@@ -36,11 +36,11 @@ cron.schedule(
   }
 );
 
-// scrapingのテスト
+//Qiitaの定期投稿
 cron.schedule(
-  '0 0 8 * * *',
+  '0 0 7 * * *',
   () => {
-    scrapingLevtechCareer();
+    postQiita();
   },
   {
     scheduled: true,
