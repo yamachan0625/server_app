@@ -38,6 +38,32 @@ export const typeDefs = gql`
     numberOfCase: Int
   }
 
+  type LanguageData {
+    NodeJs: Int!
+    React: Int!
+    Angular: Int!
+    VueJs: Int!
+    NextJs: Int!
+    NuxtJs: Int!
+    TypeScript: Int!
+    JavaScript: Int!
+    ReactNative: Int!
+    Flutter: Int!
+    Electron: Int!
+    Graphql: Int!
+    Redux: Int!
+    VueX: Int!
+    Jest: Int!
+    Cypress: Int!
+    Webpack: Int!
+  }
+
+  type Job {
+    siteName: String!
+    jobData: LanguageData!
+    date: Date!
+  }
+
   type Query {
     user: User
     users: [User]

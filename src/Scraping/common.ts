@@ -18,6 +18,26 @@ export const serchKeyWord = [
   'Webpack',
 ] as const;
 
+export const jobkey = [
+  'NodeJs',
+  'React',
+  'Angular',
+  'VueJs',
+  'NextJs',
+  'NuxtJs',
+  'TypeScript',
+  'JavaScript',
+  'ReactNative',
+  'Flutter',
+  'Electron',
+  'Graphql',
+  'Redux',
+  'VueX',
+  'Jest',
+  'Cypress',
+  'Webpack',
+] as const;
+
 export const puppeteerOptions = {
   fullPage: true, // フルページ読み込み
   headless: false, // true:ブラウザ開かなくなる false:ブラウザ開く

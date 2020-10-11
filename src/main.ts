@@ -10,6 +10,7 @@ import { typeDefs } from './typeDefs/index';
 import { resolvers } from './resolvers/index';
 import { context } from './contexts/index';
 import { scrapingLevtechCareer } from './Scraping/LevtechCareer';
+import { scrapingGeekOut } from './Scraping/GeekOut';
 import { postQiita } from './postQiita';
 
 dotenv.config();
@@ -18,6 +19,7 @@ const app = express();
 
 //データ収集定期実行
 cron.schedule('*/1 * * * *', () => {
+  scrapingGeekOut();
   // continueScreemshot();
   // postQiita();
 });

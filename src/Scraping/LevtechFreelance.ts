@@ -27,10 +27,6 @@ export const scrapingLevtechFreelance = async () => {
       delay: 250,
     });
 
-    // 一度他の要素を選択しないと検索件数が反映されない為checkboxをフォーカス
-    // const checkBox = await page.$('#workers_range_type_lower_0');
-    // await checkBox.focus();
-
     // 検索結果反映に若干ラグがある為5000ms待機
     await page
       // @ts-ignore
