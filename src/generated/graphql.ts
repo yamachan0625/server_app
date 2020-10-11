@@ -55,6 +55,34 @@ export type Matter = {
   numberOfCase?: Maybe<Scalars['Int']>;
 };
 
+export type LanguageData = {
+  __typename?: 'LanguageData';
+  NodeJs: Scalars['Int'];
+  React: Scalars['Int'];
+  Angular: Scalars['Int'];
+  VueJs: Scalars['Int'];
+  NextJs: Scalars['Int'];
+  NuxtJs: Scalars['Int'];
+  TypeScript: Scalars['Int'];
+  JavaScript: Scalars['Int'];
+  ReactNative: Scalars['Int'];
+  Flutter: Scalars['Int'];
+  Electron: Scalars['Int'];
+  Graphql: Scalars['Int'];
+  Redux: Scalars['Int'];
+  VueX: Scalars['Int'];
+  Jest: Scalars['Int'];
+  Cypress: Scalars['Int'];
+  Webpack: Scalars['Int'];
+};
+
+export type Job = {
+  __typename?: 'Job';
+  siteName: Scalars['String'];
+  jobData: LanguageData;
+  date: Scalars['Date'];
+};
+
 export type Query = {
   __typename?: 'Query';
   user?: Maybe<User>;
@@ -215,6 +243,8 @@ export type ResolversTypes = {
   User: ResolverTypeWrapper<User>;
   Auth: ResolverTypeWrapper<Auth>;
   Matter: ResolverTypeWrapper<Matter>;
+  LanguageData: ResolverTypeWrapper<LanguageData>;
+  Job: ResolverTypeWrapper<Job>;
   Query: ResolverTypeWrapper<{}>;
   Mutation: ResolverTypeWrapper<{}>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
@@ -232,6 +262,8 @@ export type ResolversParentTypes = {
   User: User;
   Auth: Auth;
   Matter: Matter;
+  LanguageData: LanguageData;
+  Job: Job;
   Query: {};
   Mutation: {};
   Boolean: Scalars['Boolean'];
@@ -282,6 +314,34 @@ export type MatterResolvers<ContextType = any, ParentType extends ResolversParen
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
+export type LanguageDataResolvers<ContextType = any, ParentType extends ResolversParentTypes['LanguageData'] = ResolversParentTypes['LanguageData']> = {
+  NodeJs?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  React?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  Angular?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  VueJs?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  NextJs?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  NuxtJs?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  TypeScript?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  JavaScript?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  ReactNative?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  Flutter?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  Electron?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  Graphql?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  Redux?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  VueX?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  Jest?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  Cypress?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  Webpack?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type JobResolvers<ContextType = any, ParentType extends ResolversParentTypes['Job'] = ResolversParentTypes['Job']> = {
+  siteName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  jobData?: Resolver<ResolversTypes['LanguageData'], ParentType, ContextType>;
+  date?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   users?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
@@ -310,6 +370,8 @@ export type Resolvers<ContextType = any> = {
   User?: UserResolvers<ContextType>;
   Auth?: AuthResolvers<ContextType>;
   Matter?: MatterResolvers<ContextType>;
+  LanguageData?: LanguageDataResolvers<ContextType>;
+  Job?: JobResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
 };
