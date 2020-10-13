@@ -9,26 +9,22 @@ import cron from 'node-cron';
 import { typeDefs } from './typeDefs/index';
 import { resolvers } from './resolvers/index';
 import { context } from './contexts/index';
-import { scrapingLevtechCareer } from './Scraping/LevtechCareer';
 import { scrapingGeekOut } from './Scraping/GeekOut';
+import { scrapingAll } from './Scraping/index';
 import { postQiita } from './postQiita';
 
 dotenv.config();
 
 const app = express();
 
-//データ収集定期実行
-cron.schedule('*/1 * * * *', () => {
-  // scrapingGeekOut();
-  // continueScreemshot();
-  // postQiita();
-});
+// 定期実行テスト用
+// cron.schedule('*/3 * * * *', () => {});
 
-// スクレイピングテスト
+// スクレイピング定期実行
 cron.schedule(
-  '0 0 6 * * *',
+  '0 0 5 * * *',
   () => {
-    scrapingGeekOut();
+    scrapingAll();
   },
   {
     scheduled: true,

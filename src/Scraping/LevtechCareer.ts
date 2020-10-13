@@ -1,50 +1,60 @@
 import puppeteer from 'puppeteer';
-import { Matter } from '../models/matter';
-import { serchKeyWord, puppeteerOptions } from './common';
+import dayjs from 'dayjs';
+
+import { Job } from '../models/job';
+import { serchKeyWord, jobkey, puppeteerOptions } from './common';
 
 export const scrapingLevtechCareer = async () => {
-  const browser = await puppeteer.launch(puppeteerOptions);
+  try {
+    const browser = await puppeteer.launch(puppeteerOptions);
 
-  const page = await browser.newPage();
+    const page = await browser.newPage();
 
-  // タイムアウトを無制限に
-  await page.setDefaultNavigationTimeout(0);
+    // タイムアウトを無制限に
+    await page.setDefaultNavigationTimeout(0);
 
-  await page.goto(`https://career.levtech.jp/engineer/offer/search`);
+    await page.goto(`https://career.levtech.jp/engineer/offer/search`);
 
-  for (let i = 0; i < serchKeyWord.length; i++) {
-    const inputBox = await page.$('#keyword');
+    const jobData = {};
 
-    // @ts-ignore // 検索欄リセット
-    await page.$eval('#keyword', (element) => (element.value = ''));
+    for (let i = 0; i < serchKeyWord.length; i++) {
+      const inputBox = await page.$('#keyword');
 
-    // 検索欄に入力
-    await inputBox.type(serchKeyWord[i], {
-      delay: 250,
+      // @ts-ignore // 検索欄リセット
+      await page.$eval('#keyword', (element) => (element.value = ''));
+
+      // 検索欄に入力
+      await inputBox.type(serchKeyWord[i], {
+        delay: 250,
+      });
+
+      const button = await page.$('.btnSearch');
+
+      await Promise.all([
+        page.waitForNavigation({ waitUntil: ['load', 'networkidle2'] }),
+        button.click(),
+      ]);
+
+      const searchCount = await page.evaluate(async () => {
+        return document.querySelector('.js-searchCount').innerHTML;
+      });
+
+      jobData[jobkey[i]] = searchCount;
+    }
+
+    const now = dayjs();
+    const date = now.format();
+
+    const job = new Job({
+      siteName: 'LevtechCareer',
+      jobData: jobData,
+      date: date,
     });
 
-    const button = await page.$('.btnSearch');
+    await job.save();
 
-    await Promise.all([
-      page.waitForNavigation({ waitUntil: ['load', 'networkidle2'] }),
-      button.click(),
-      // page.waitForSelector('.js-searchCount'),
-      // page.waitForSelector('#keyword'),
-    ]);
-
-    const searchCount = await page.evaluate(async () => {
-      return document.querySelector('.js-searchCount').innerHTML;
-    });
-    console.log(serchKeyWord[i], ':', 'count:', searchCount);
+    await browser.close();
+  } catch (error) {
+    console.log(error);
   }
-
-  await browser.close();
-
-  // const matter = new Matter({
-  //   numberOfCase: Number(topSearchCount),
-  // });
-
-  // await matter.save();
 };
-
-scrapingLevtechCareer();

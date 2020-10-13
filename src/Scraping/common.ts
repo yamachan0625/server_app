@@ -39,9 +39,8 @@ export const jobkey = [
 ] as const;
 
 export const puppeteerOptions = {
-  fullPage: true, // フルページ読み込み
+  // fullPage: true, // フルページ読み込み
   headless: true, // true:ブラウザ開かなくなる false:ブラウザ開く
   args: ['--no-sandbox', '--disable-dev-shm-usage'],
   ignoreDefaultArgs: ['--disable-extensions'],
-  // slowMo: 100, // 動作を遅く
 };
