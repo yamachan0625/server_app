@@ -13,5 +13,7 @@ const scrapingList = [
 ];
 
 export const scrapingAll = async () => {
-  scrapingList.forEach((scraping) => scraping());
+  for (let i = 0; i < scrapingList.length; i++) {
+    await scrapingList[i]();
+  }
 };

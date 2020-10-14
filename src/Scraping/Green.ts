@@ -4,7 +4,6 @@ import dayjs from 'dayjs';
 import { Job } from '../models/job';
 import { serchKeyWord, jobkey, puppeteerOptions } from './common';
 
-// 毎回ブラウザを閉じずに同じブラウザにて検索させたい;
 export const scrapingGreen = async () => {
   try {
     const browser = await puppeteer.launch(puppeteerOptions);
