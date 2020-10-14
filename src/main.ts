@@ -18,7 +18,9 @@ dotenv.config();
 const app = express();
 
 // 定期実行テスト用
-// cron.schedule('*/3 * * * *', () => {});
+cron.schedule('*/5 * * * *', () => {
+  scrapingAll();
+});
 
 // スクレイピング定期実行
 cron.schedule(
