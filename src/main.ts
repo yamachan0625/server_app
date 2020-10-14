@@ -9,7 +9,6 @@ import cron from 'node-cron';
 import { typeDefs } from './typeDefs/index';
 import { resolvers } from './resolvers/index';
 import { context } from './contexts/index';
-import { scrapingGeekOut } from './Scraping/GeekOut';
 import { scrapingAll } from './Scraping/index';
 import { postQiita } from './postQiita';
 
@@ -18,13 +17,11 @@ dotenv.config();
 const app = express();
 
 // 定期実行テスト用
-cron.schedule('*/30 * * * *', () => {
-  scrapingAll();
-});
+// cron.schedule('*/3 * * * *', () => {});
 
 // スクレイピング定期実行
 cron.schedule(
-  '0 0 5 * * *',
+  '0 0 3 * * *',
   () => {
     scrapingAll();
   },
