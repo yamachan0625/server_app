@@ -19,9 +19,9 @@ const app = express();
 const isProduction = process.env.NODE_ENV === 'production';
 
 // 定期実行テスト用
-cron.schedule('*/20 * * * *', () => {
-  isProduction ? scrapingAll() : () => {};
-});
+// cron.schedule('*/20 * * * *', () => {
+//   isProduction ? scrapingAll() : () => {};
+// });
 
 // スクレイピング定期実行
 cron.schedule(

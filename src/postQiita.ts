@@ -11,7 +11,7 @@ export const postQiita = async () => {
     { tag: 'Next.js', id: '768cddd26837e101247f' },
   ];
 
-  const now = dayjs();
+  const now = dayjs().add(9, 'hour');
   const BASE_URL = 'https://qiita.com/api/v2';
   const authorization_token = `Bearer ${process.env.QIITA_AUTH_TOKEN}`;
 
