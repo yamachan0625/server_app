@@ -16,14 +16,18 @@ dotenv.config();
 
 const app = express();
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 // 定期実行テスト用
-// cron.schedule('*/3 * * * *', () => {});
+cron.schedule('*/20 * * * *', () => {
+  isProduction ? scrapingAll() : () => {};
+});
 
 // スクレイピング定期実行
 cron.schedule(
   '0 0 3 * * *',
   () => {
-    scrapingAll();
+    isProduction ? scrapingAll() : () => {};
   },
   {
     scheduled: true,
@@ -35,7 +39,7 @@ cron.schedule(
 cron.schedule(
   '0 0 7 * * *',
   () => {
-    postQiita();
+    isProduction ? postQiita() : () => {};
   },
   {
     scheduled: true,
@@ -46,7 +50,7 @@ cron.schedule(
 const connectOption = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  ...(process.env.NODE_ENV === 'production'
+  ...(isProduction
     ? {}
     : {
         user: process.env.DEV_DB_USER,
@@ -55,10 +59,9 @@ const connectOption = {
       }),
 };
 
-const mongoDB =
-  process.env.NODE_ENV === 'production'
-    ? `mongodb+srv://${process.env.PRO_DB_USER}:${process.env.PRO_DB_PASS}@portfolio.tzurq.mongodb.net/${process.env.PRO_DB_NAME}?retryWrites=true&w=majority`
-    : 'mongodb://db:27017';
+const mongoDB = isProduction
+  ? `mongodb+srv://${process.env.PRO_DB_USER}:${process.env.PRO_DB_PASS}@portfolio.tzurq.mongodb.net/${process.env.PRO_DB_NAME}?retryWrites=true&w=majority`
+  : 'mongodb://db:27017';
 
 mongoose.connect(mongoDB, connectOption);
 
