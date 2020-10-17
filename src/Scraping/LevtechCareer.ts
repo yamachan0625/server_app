@@ -42,7 +42,7 @@ export const scrapingLevtechCareer = async () => {
       jobData[jobkey[i]] = searchCount;
     }
 
-    const now = dayjs();
+    const now = dayjs().add(9, 'hour');
     const date = now.format();
 
     const job = new Job({

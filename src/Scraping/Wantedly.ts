@@ -50,7 +50,7 @@ export const scrapingWantedly = async () => {
         .waitForTimeout(3000);
     }
 
-    const now = dayjs();
+    const now = dayjs().add(9, 'hour');
     const date = now.format();
 
     const job = new Job({
