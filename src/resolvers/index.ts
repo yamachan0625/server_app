@@ -81,7 +81,7 @@ const Mutation: MutationResolvers = {
       });
 
       if (existingUser) {
-        throw new Error('ユーザーは既に存在します');
+        throw new Error('このメールアドレスは既に使用されています');
       }
 
       const hashedPassword = await bcrypt.hash(args.password, 12);
@@ -129,7 +129,7 @@ const Mutation: MutationResolvers = {
       const user = await User.findOne({ email: args.email });
 
       if (!user) {
-        throw new Error('ユーザーは存在しません');
+        throw new Error('メールアドレスが間違っています');
       }
 
       const isEqual = await bcrypt.compare(args.password, user.password);
