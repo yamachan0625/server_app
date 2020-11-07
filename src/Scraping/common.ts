@@ -1,12 +1,12 @@
 export const serchKeyWord = [
-  'Node.js',
+  'TypeScript',
+  'JavaScript',
   'React',
   'Angular',
   'Vue.js',
+  'Node.js',
   'Next.js',
   'Nuxt.js',
-  'TypeScript',
-  'JavaScript',
   'ReactNative',
   'Flutter',
   'Electron',
@@ -19,14 +19,14 @@ export const serchKeyWord = [
 ] as const;
 
 export const jobkey = [
-  'NodeJs',
+  'TypeScript',
+  'JavaScript',
   'React',
   'Angular',
   'VueJs',
+  'NodeJs',
   'NextJs',
   'NuxtJs',
-  'TypeScript',
-  'JavaScript',
   'ReactNative',
   'Flutter',
   'Electron',

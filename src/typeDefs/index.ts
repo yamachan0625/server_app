@@ -38,15 +38,15 @@ export const typeDefs = gql`
     numberOfCase: Int
   }
 
-  type LanguageData {
-    NodeJs: Int!
+  type SkillName {
+    TypeScript: Int!
+    JavaScript: Int!
     React: Int!
     Angular: Int!
     VueJs: Int!
+    NodeJs: Int!
     NextJs: Int!
     NuxtJs: Int!
-    TypeScript: Int!
-    JavaScript: Int!
     ReactNative: Int!
     Flutter: Int!
     Electron: Int!
@@ -60,8 +60,21 @@ export const typeDefs = gql`
 
   type Job {
     siteName: String!
-    jobData: LanguageData!
+    jobData: SkillName!
     date: Date!
+  }
+
+  type JobData {
+    siteName: String!
+    skillName: [String]!
+    jobVacancies: [Int]!
+    chartColor: [String]!
+    chartBorderColor: [String]!
+  }
+
+  type BarChartResponse {
+    date: Date!
+    jobData: [JobData]!
   }
 
   type Query {
@@ -72,6 +85,8 @@ export const typeDefs = gql`
     movies: [Movie]
     directors: [Director]
     matters: [Matter]
+    jobs: [Job]
+    getBarChartList(date: Date!, sortOrder: String!): [Job]
   }
 
   type Mutation {

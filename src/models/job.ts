@@ -5,14 +5,14 @@ const Scema = mongoose.Schema;
 const jobSchema = new Scema({
   siteName: String,
   jobData: {
-    NodeJs: Number,
+    TypeScript: Number,
+    JavaScript: Number,
     React: Number,
     Angular: Number,
     VueJs: Number,
+    NodeJs: Number,
     NextJs: Number,
     NuxtJs: Number,
-    TypeScript: Number,
-    JavaScript: Number,
     ReactNative: Number,
     Flutter: Number,
     Electron: Number,
