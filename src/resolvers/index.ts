@@ -1,11 +1,13 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
+import dayjs from 'dayjs';
 
 import { Movie } from '../models/movie';
 import { Director } from '../models/director';
 import { User } from '../models/user';
 import { Matter } from '../models/matter';
+import { Job } from '../models/job';
 import {
   QueryResolvers,
   MutationResolvers,
@@ -43,6 +45,24 @@ const Query: QueryResolvers = {
   matters: async () => {
     const matters = await Matter.find({});
     return matters;
+  },
+  jobs: async () => {
+    const jobs = await Job.find({});
+    console.log(jobs);
+    return jobs;
+  },
+  getBarChartList: async (_, { date, sortOrder }) => {
+    console.log({ date });
+    const startDate = dayjs(date).format('YYYY-MM-DD');
+    const endDate = dayjs(startDate).add(1, 'day').format('YYYY-MM-DD');
+
+    const jobs = await Job.find({
+      date: {
+        $gte: startDate,
+        $lt: endDate,
+      },
+    });
+    return jobs;
   },
 };
 
