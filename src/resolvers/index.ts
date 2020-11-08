@@ -14,6 +14,94 @@ import {
   Resolvers,
 } from '../generated/graphql';
 
+const skillOptions = {
+  NodeJs: {
+    name: 'Node.js',
+    color: 'rgba(62, 134, 61, 1)',
+    transparentColor: 'rgba(62, 134, 61, 0.5)',
+  },
+  React: {
+    name: 'React',
+    color: 'rgba(97, 219, 251, 1)',
+    transparentColor: 'rgba(97, 219, 251, 0.5)',
+  },
+  Angular: {
+    name: 'Angular',
+    color: 'rgba(221, 0, 49, 1)',
+    transparentColor: 'rgba(221, 0, 49, 0.5)',
+  },
+  VueJs: {
+    name: 'Vue.js',
+    color: 'rgba(65, 184, 131, 1)',
+    transparentColor: 'rgba(65, 184, 131, 0.5)',
+  },
+  NextJs: {
+    name: 'Next.js',
+    color: 'rgba(0, 0, 0, 1)',
+    transparentColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  NuxtJs: {
+    name: 'Nuxt.js',
+    color: 'rgba(63, 115, 102, 1)',
+    transparentColor: 'rgba(63, 115, 102, 0.5)',
+  },
+  TypeScript: {
+    name: 'TypeScript',
+    color: 'rgba(49, 120, 198, 1)',
+    transparentColor: 'rgba(49, 120, 198, 0.5)',
+  },
+  JavaScript: {
+    name: 'JavaScript',
+    color: 'rgba(253, 216, 60, 1)',
+    transparentColor: 'rgba(253, 216, 60, 0.5)',
+  },
+  ReactNative: {
+    name: 'ReactNative',
+    color: 'rgba(0, 164, 211, 1)',
+    transparentColor: 'rgba(0, 164, 211, 0.5)',
+  },
+  Flutter: {
+    name: 'Flutter',
+    color: 'rgba(97, 202, 250, 1)',
+    transparentColor: 'rgba(97, 202, 250, 0.5)',
+  },
+  Electron: {
+    name: 'Electron',
+    color: 'rgba(59, 126, 138, 1)',
+    transparentColor: 'rgba(59, 126, 138, 0.5)',
+  },
+  Graphql: {
+    name: 'Graphql',
+    color: 'rgba(229, 53, 171, 1)',
+    transparentColor: 'rgba(229, 53, 171, 0.5)',
+  },
+  Redux: {
+    name: 'Redux',
+    color: 'rgba(118, 74, 188, 1)',
+    transparentColor: 'rgba(118, 74, 188, 0.5)',
+  },
+  VueX: {
+    name: 'VueX',
+    color: 'rgba(93, 183, 133, 1)',
+    transparentColor: 'rgba(93, 183, 133, 0.35)',
+  },
+  Jest: {
+    name: 'Jest',
+    color: 'rgba(153, 66, 91, 1)',
+    transparentColor: 'rgba(153, 66, 91, 0.5)',
+  },
+  Cypress: {
+    name: 'Cypress',
+    color: 'rgba(71, 71, 75, 1)',
+    transparentColor: 'rgba(71, 71, 75, 0.8)',
+  },
+  Webpack: {
+    name: 'Webpack',
+    color: 'rgba(142, 214, 251, 1)',
+    transparentColor: 'rgba(142, 214, 251, 0.5)',
+  },
+};
+
 const Query: QueryResolvers = {
   user: async (_, args, { req }) => {
     const user = await User.findById(req.userId);
@@ -50,82 +138,74 @@ const Query: QueryResolvers = {
     const jobs = await Job.find({});
     return jobs;
   },
-  getBarChartList: async (_, { date, sortOrder }) => {
-    const barChartRrsponse: any = {};
-    barChartRrsponse['scrapingDate'] = date;
+  getBarChartList: async (
+    _,
+    { date, sortOrder }: { date: Date; sortOrder: string }
+  ) => {
+    const barChartRrsponse: any = {
+      scrapingDate: date,
+    };
 
+    // ソートに使用する
     const startDate = dayjs(date).add(9, 'hour').format('YYYY-MM-DD');
     const endDate = dayjs(startDate).add(1, 'day').format('YYYY-MM-DD');
 
-    // フロントで選択された日付のデータのみ取得する
-    const sortedDateData = await Job.find({
+    // クライアントで選択された日付のデータを取得する
+    const sortDateData = await Job.find({
       date: {
         $gte: startDate,
         $lt: endDate,
       },
     });
 
-    const jobData = [];
-    sortedDateData.forEach((data) => {
-      const dataObj = {};
-      dataObj['siteName'] = data.siteName;
+    const jobData: {
+      siteName: string;
+      skillName: string[];
+      jobVacancies: number[];
+      chartColor: string[];
+      chartBorderColor: string[];
+    }[] = sortDateData.reduce((acc, data) => {
+      const dataObj: {
+        siteName: string;
+        skillName: string[];
+        jobVacancies: number[];
+        chartColor: string[];
+        chartBorderColor: string[];
+      } = {
+        siteName: data.siteName,
+        skillName: [],
+        jobVacancies: [],
+        chartColor: [],
+        chartBorderColor: [],
+      };
 
-      const jobList: [string, unknown][] = Object.entries(data.jobData);
+      const jobList: [string, number][] = Object.entries(data.jobData);
       // NOTE:配列の先頭に[ '$init', true ]という値が入ってしまうため削除
       jobList.shift();
-      const sortedJobList = jobList.sort(
-        (a: [string, number], b: [string, number]) => a[1] - b[1]
-      );
 
-      const skillName = [];
-      const jobVacancies = [];
+      // [['react', 100]]のような二次元配列の[1]番目の数字をソート
+      const sortedJobList = (() => {
+        if (sortOrder === '昇順')
+          return jobList.sort(
+            (a: [string, number], b: [string, number]) => a[1] - b[1]
+          );
+
+        if (sortOrder === '降順')
+          return jobList.sort(
+            (a: [string, number], b: [string, number]) => b[1] - a[1]
+          );
+        return jobList;
+      })();
+
       sortedJobList.forEach((data) => {
-        skillName.push(data[0]);
-        jobVacancies.push(data[1]);
+        dataObj['skillName'].push(skillOptions[data[0]].name);
+        dataObj['chartColor'].push(skillOptions[data[0]].transparentColor);
+        dataObj['chartBorderColor'].push(skillOptions[data[0]].color);
+        dataObj['jobVacancies'].push(data[1]);
       });
-      dataObj['skillName'] = skillName;
-      dataObj['jobVacancies'] = jobVacancies;
-      dataObj['chartColor'] = [
-        'rgba(62, 134, 61, 0.5)',
-        'rgba(97, 219, 251, 0.5)',
-        'rgba(221, 0, 49, 0.5)',
-        'rgba(65, 184, 131, 0.5)',
-        'rgba(0, 0, 0, 0.5)',
-        'rgba(63,115,102,0.5)',
-        'rgba(49, 120, 198, 0.5)',
-        'rgba(253, 216, 60, 0.5)',
-        'rgba(0, 164, 211, 0.5)',
-        'rgba(97, 202, 250, 0.5)',
-        'rgba(59, 126, 138, 0.5)',
-        'rgba(229, 53, 171, 0.5)',
-        'rgba(118, 74, 188, 0.5)',
-        'rgba(93, 183, 133, 0.35)',
-        'rgba(153, 66, 91, 0.5)',
-        'rgba(71, 71, 75, 0.8)',
-        'rgba(142, 214, 251, 0.5)',
-      ];
-      dataObj['chartBorderColor'] = [
-        'rgba(62, 134, 61, 0.5)',
-        'rgba(97, 219, 251, 0.5)',
-        'rgba(221, 0, 49, 0.5)',
-        'rgba(65, 184, 131, 0.5)',
-        'rgba(0, 0, 0, 0.5)',
-        'rgba(63,115,102,0.5)',
-        'rgba(49, 120, 198, 0.5)',
-        'rgba(253, 216, 60, 0.5)',
-        'rgba(0, 164, 211, 0.5)',
-        'rgba(97, 202, 250, 0.5)',
-        'rgba(59, 126, 138, 0.5)',
-        'rgba(229, 53, 171, 0.5)',
-        'rgba(118, 74, 188, 0.5)',
-        'rgba(93, 183, 133, 0.35)',
-        'rgba(153, 66, 91, 0.5)',
-        'rgba(71, 71, 75, 0.8)',
-        'rgba(142, 214, 251, 0.5)',
-      ];
 
-      jobData.push(dataObj);
-    });
+      return acc.concat(dataObj);
+    }, []);
 
     barChartRrsponse['jobData'] = jobData;
     return barChartRrsponse;
