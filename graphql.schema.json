@@ -818,7 +818,7 @@
         "description": null,
         "fields": [
           {
-            "name": "date",
+            "name": "scrapingDate",
             "description": null,
             "args": [],
             "type": {
@@ -1025,11 +1025,11 @@
               }
             ],
             "type": {
-              "kind": "LIST",
+              "kind": "NON_NULL",
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "Job",
+                "name": "BarChartResponse",
                 "ofType": null
               }
             },

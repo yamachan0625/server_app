@@ -48,21 +48,87 @@ const Query: QueryResolvers = {
   },
   jobs: async () => {
     const jobs = await Job.find({});
-    console.log(jobs);
     return jobs;
   },
   getBarChartList: async (_, { date, sortOrder }) => {
-    console.log({ date });
-    const startDate = dayjs(date).format('YYYY-MM-DD');
+    const barChartRrsponse: any = {};
+    barChartRrsponse['scrapingDate'] = date;
+
+    const startDate = dayjs(date).add(9, 'hour').format('YYYY-MM-DD');
     const endDate = dayjs(startDate).add(1, 'day').format('YYYY-MM-DD');
 
-    const jobs = await Job.find({
+    // フロントで選択された日付のデータのみ取得する
+    const sortedDateData = await Job.find({
       date: {
         $gte: startDate,
         $lt: endDate,
       },
     });
-    return jobs;
+
+    const jobData = [];
+    sortedDateData.forEach((data) => {
+      const dataObj = {};
+      dataObj['siteName'] = data.siteName;
+
+      const jobList: [string, unknown][] = Object.entries(data.jobData);
+      // NOTE:配列の先頭に[ '$init', true ]という値が入ってしまうため削除
+      jobList.shift();
+      const sortedJobList = jobList.sort(
+        (a: [string, number], b: [string, number]) => a[1] - b[1]
+      );
+
+      const skillName = [];
+      const jobVacancies = [];
+      sortedJobList.forEach((data) => {
+        skillName.push(data[0]);
+        jobVacancies.push(data[1]);
+      });
+      dataObj['skillName'] = skillName;
+      dataObj['jobVacancies'] = jobVacancies;
+      dataObj['chartColor'] = [
+        'rgba(62, 134, 61, 0.5)',
+        'rgba(97, 219, 251, 0.5)',
+        'rgba(221, 0, 49, 0.5)',
+        'rgba(65, 184, 131, 0.5)',
+        'rgba(0, 0, 0, 0.5)',
+        'rgba(63,115,102,0.5)',
+        'rgba(49, 120, 198, 0.5)',
+        'rgba(253, 216, 60, 0.5)',
+        'rgba(0, 164, 211, 0.5)',
+        'rgba(97, 202, 250, 0.5)',
+        'rgba(59, 126, 138, 0.5)',
+        'rgba(229, 53, 171, 0.5)',
+        'rgba(118, 74, 188, 0.5)',
+        'rgba(93, 183, 133, 0.35)',
+        'rgba(153, 66, 91, 0.5)',
+        'rgba(71, 71, 75, 0.8)',
+        'rgba(142, 214, 251, 0.5)',
+      ];
+      dataObj['chartBorderColor'] = [
+        'rgba(62, 134, 61, 0.5)',
+        'rgba(97, 219, 251, 0.5)',
+        'rgba(221, 0, 49, 0.5)',
+        'rgba(65, 184, 131, 0.5)',
+        'rgba(0, 0, 0, 0.5)',
+        'rgba(63,115,102,0.5)',
+        'rgba(49, 120, 198, 0.5)',
+        'rgba(253, 216, 60, 0.5)',
+        'rgba(0, 164, 211, 0.5)',
+        'rgba(97, 202, 250, 0.5)',
+        'rgba(59, 126, 138, 0.5)',
+        'rgba(229, 53, 171, 0.5)',
+        'rgba(118, 74, 188, 0.5)',
+        'rgba(93, 183, 133, 0.35)',
+        'rgba(153, 66, 91, 0.5)',
+        'rgba(71, 71, 75, 0.8)',
+        'rgba(142, 214, 251, 0.5)',
+      ];
+
+      jobData.push(dataObj);
+    });
+
+    barChartRrsponse['jobData'] = jobData;
+    return barChartRrsponse;
   },
 };
 

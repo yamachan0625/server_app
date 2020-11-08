@@ -1,4 +1,4 @@
-/**オブジェクトのキーを指定して昇降順にソートする */
+/**オブジェクトとそのキーを指定してバリューを昇降順にソートする */
 export const objectArraySort = <T extends any[]>(
   data: T,
   key: string,

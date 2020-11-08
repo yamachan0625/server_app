@@ -94,7 +94,7 @@ export type JobData = {
 
 export type BarChartResponse = {
   __typename?: 'BarChartResponse';
-  date: Scalars['Date'];
+  scrapingDate: Scalars['Date'];
   jobData: Array<Maybe<JobData>>;
 };
 
@@ -108,7 +108,7 @@ export type Query = {
   directors?: Maybe<Array<Maybe<Director>>>;
   matters?: Maybe<Array<Maybe<Matter>>>;
   jobs?: Maybe<Array<Maybe<Job>>>;
-  getBarChartList?: Maybe<Array<Maybe<Job>>>;
+  getBarChartList: BarChartResponse;
 };
 
 
@@ -379,7 +379,7 @@ export type JobDataResolvers<ContextType = any, ParentType extends ResolversPare
 };
 
 export type BarChartResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['BarChartResponse'] = ResolversParentTypes['BarChartResponse']> = {
-  date?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
+  scrapingDate?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   jobData?: Resolver<Array<Maybe<ResolversTypes['JobData']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
@@ -393,7 +393,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   directors?: Resolver<Maybe<Array<Maybe<ResolversTypes['Director']>>>, ParentType, ContextType>;
   matters?: Resolver<Maybe<Array<Maybe<ResolversTypes['Matter']>>>, ParentType, ContextType>;
   jobs?: Resolver<Maybe<Array<Maybe<ResolversTypes['Job']>>>, ParentType, ContextType>;
-  getBarChartList?: Resolver<Maybe<Array<Maybe<ResolversTypes['Job']>>>, ParentType, ContextType, RequireFields<QueryGetBarChartListArgs, 'date' | 'sortOrder'>>;
+  getBarChartList?: Resolver<ResolversTypes['BarChartResponse'], ParentType, ContextType, RequireFields<QueryGetBarChartListArgs, 'date' | 'sortOrder'>>;
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
