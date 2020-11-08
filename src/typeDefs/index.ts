@@ -73,7 +73,7 @@ export const typeDefs = gql`
   }
 
   type BarChartResponse {
-    date: Date!
+    scrapingDate: Date!
     jobData: [JobData]!
   }
 
@@ -86,7 +86,7 @@ export const typeDefs = gql`
     directors: [Director]
     matters: [Matter]
     jobs: [Job]
-    getBarChartList(date: Date!, sortOrder: String!): [Job]
+    getBarChartList(date: Date!, sortOrder: String!): BarChartResponse!
   }
 
   type Mutation {
