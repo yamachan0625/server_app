@@ -834,6 +834,22 @@
             "deprecationReason": null
           },
           {
+            "name": "minDate",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Date",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "jobData",
             "description": null,
             "args": [],

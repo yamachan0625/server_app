@@ -142,8 +142,16 @@ const Query: QueryResolvers = {
     _,
     { date, sortOrder }: { date: Date; sortOrder: string }
   ) => {
+    const minDate = await Job.find().sort({ date: 1 }).limit(1);
+
     const barChartRrsponse: any = {
       scrapingDate: date,
+      /** フロントで使用しているreact-datepickerの関係上dateを使用できる形式に変更して返す
+       * TODO: ここの処理見直したい
+       */
+      minDate: new Date(
+        dayjs(minDate[0].date).add(-9, 'hour').format('')
+      ).toString(),
     };
 
     // ソートに使用する

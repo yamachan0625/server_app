@@ -74,6 +74,7 @@ export const typeDefs = gql`
 
   type BarChartResponse {
     scrapingDate: Date!
+    minDate: Date!
     jobData: [JobData]!
   }
 
