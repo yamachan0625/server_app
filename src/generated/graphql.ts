@@ -95,6 +95,7 @@ export type JobData = {
 export type BarChartResponse = {
   __typename?: 'BarChartResponse';
   scrapingDate: Scalars['Date'];
+  minDate: Scalars['Date'];
   jobData: Array<Maybe<JobData>>;
 };
 
@@ -380,6 +381,7 @@ export type JobDataResolvers<ContextType = any, ParentType extends ResolversPare
 
 export type BarChartResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['BarChartResponse'] = ResolversParentTypes['BarChartResponse']> = {
   scrapingDate?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
+  minDate?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   jobData?: Resolver<Array<Maybe<ResolversTypes['JobData']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
