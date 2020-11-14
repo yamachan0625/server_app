@@ -99,6 +99,25 @@ export type BarChartResponse = {
   jobData: Array<Maybe<JobData>>;
 };
 
+export type LineChartSkillData = {
+  __typename?: 'LineChartSkillData';
+  label: Scalars['String'];
+  data: Array<Maybe<Scalars['Int']>>;
+  borderColor: Scalars['String'];
+};
+
+export type LineChartJobData = {
+  __typename?: 'LineChartJobData';
+  siteName: Scalars['String'];
+  skillData: Array<LineChartSkillData>;
+};
+
+export type LineChartResponse = {
+  __typename?: 'LineChartResponse';
+  rangeDate: Array<Scalars['Date']>;
+  jobData: Array<LineChartJobData>;
+};
+
 export type Query = {
   __typename?: 'Query';
   user?: Maybe<User>;
@@ -110,6 +129,7 @@ export type Query = {
   matters?: Maybe<Array<Maybe<Matter>>>;
   jobs?: Maybe<Array<Maybe<Job>>>;
   getBarChartList: BarChartResponse;
+  getLineChartList: LineChartResponse;
 };
 
 
@@ -121,6 +141,12 @@ export type QueryMovieArgs = {
 export type QueryGetBarChartListArgs = {
   date: Scalars['Date'];
   sortOrder: Scalars['String'];
+};
+
+
+export type QueryGetLineChartListArgs = {
+  dateRange: Scalars['String'];
+  skills: Array<Maybe<Scalars['String']>>;
 };
 
 export type Mutation = {
@@ -271,6 +297,9 @@ export type ResolversTypes = {
   Job: ResolverTypeWrapper<Job>;
   JobData: ResolverTypeWrapper<JobData>;
   BarChartResponse: ResolverTypeWrapper<BarChartResponse>;
+  LineChartSkillData: ResolverTypeWrapper<LineChartSkillData>;
+  LineChartJobData: ResolverTypeWrapper<LineChartJobData>;
+  LineChartResponse: ResolverTypeWrapper<LineChartResponse>;
   Query: ResolverTypeWrapper<{}>;
   Mutation: ResolverTypeWrapper<{}>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
@@ -292,6 +321,9 @@ export type ResolversParentTypes = {
   Job: Job;
   JobData: JobData;
   BarChartResponse: BarChartResponse;
+  LineChartSkillData: LineChartSkillData;
+  LineChartJobData: LineChartJobData;
+  LineChartResponse: LineChartResponse;
   Query: {};
   Mutation: {};
   Boolean: Scalars['Boolean'];
@@ -386,6 +418,25 @@ export type BarChartResponseResolvers<ContextType = any, ParentType extends Reso
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
+export type LineChartSkillDataResolvers<ContextType = any, ParentType extends ResolversParentTypes['LineChartSkillData'] = ResolversParentTypes['LineChartSkillData']> = {
+  label?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  data?: Resolver<Array<Maybe<ResolversTypes['Int']>>, ParentType, ContextType>;
+  borderColor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type LineChartJobDataResolvers<ContextType = any, ParentType extends ResolversParentTypes['LineChartJobData'] = ResolversParentTypes['LineChartJobData']> = {
+  siteName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  skillData?: Resolver<Array<ResolversTypes['LineChartSkillData']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type LineChartResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['LineChartResponse'] = ResolversParentTypes['LineChartResponse']> = {
+  rangeDate?: Resolver<Array<ResolversTypes['Date']>, ParentType, ContextType>;
+  jobData?: Resolver<Array<ResolversTypes['LineChartJobData']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   users?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
@@ -396,6 +447,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   matters?: Resolver<Maybe<Array<Maybe<ResolversTypes['Matter']>>>, ParentType, ContextType>;
   jobs?: Resolver<Maybe<Array<Maybe<ResolversTypes['Job']>>>, ParentType, ContextType>;
   getBarChartList?: Resolver<ResolversTypes['BarChartResponse'], ParentType, ContextType, RequireFields<QueryGetBarChartListArgs, 'date' | 'sortOrder'>>;
+  getLineChartList?: Resolver<ResolversTypes['LineChartResponse'], ParentType, ContextType, RequireFields<QueryGetLineChartListArgs, 'dateRange' | 'skills'>>;
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
@@ -420,6 +472,9 @@ export type Resolvers<ContextType = any> = {
   Job?: JobResolvers<ContextType>;
   JobData?: JobDataResolvers<ContextType>;
   BarChartResponse?: BarChartResponseResolvers<ContextType>;
+  LineChartSkillData?: LineChartSkillDataResolvers<ContextType>;
+  LineChartJobData?: LineChartJobDataResolvers<ContextType>;
+  LineChartResponse?: LineChartResponseResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
 };

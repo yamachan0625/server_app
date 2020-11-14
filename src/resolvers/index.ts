@@ -13,8 +13,14 @@ import {
   MutationResolvers,
   Resolvers,
 } from '../generated/graphql';
+import {
+  Job as JobType,
+  LineChartSkillData,
+  LineChartJobData,
+  JobData,
+} from '../generated/graphql';
 
-const skillOptions = {
+const skillOptionObj = {
   NodeJs: {
     name: 'Node.js',
     color: 'rgba(62, 134, 61, 1)',
@@ -142,44 +148,20 @@ const Query: QueryResolvers = {
     _,
     { date, sortOrder }: { date: Date; sortOrder: string }
   ) => {
-    const minDate = await Job.find().sort({ date: 1 }).limit(1);
-
-    const barChartRrsponse: any = {
-      scrapingDate: date,
-      /** フロントで使用しているreact-datepickerの関係上dateを使用できる形式に変更して返す
-       * TODO: ここの処理見直したい
-       */
-      minDate: new Date(
-        dayjs(minDate[0].date).add(-9, 'hour').format('')
-      ).toString(),
-    };
-
     // ソートに使用する
     const startDate = dayjs(date).add(9, 'hour').format('YYYY-MM-DD');
     const endDate = dayjs(startDate).add(1, 'day').format('YYYY-MM-DD');
 
     // クライアントで選択された日付のデータを取得する
-    const sortDateData = await Job.find({
+    const sortDateData: JobType[] = await Job.find({
       date: {
         $gte: startDate,
         $lt: endDate,
       },
     });
 
-    const jobData: {
-      siteName: string;
-      skillName: string[];
-      jobVacancies: number[];
-      chartColor: string[];
-      chartBorderColor: string[];
-    }[] = sortDateData.reduce((acc, data) => {
-      const dataObj: {
-        siteName: string;
-        skillName: string[];
-        jobVacancies: number[];
-        chartColor: string[];
-        chartBorderColor: string[];
-      } = {
+    const jobData: JobData[] = sortDateData.reduce((acc, data) => {
+      const dataObj = {
         siteName: data.siteName,
         skillName: [],
         jobVacancies: [],
@@ -187,11 +169,13 @@ const Query: QueryResolvers = {
         chartBorderColor: [],
       };
 
-      const jobList: [string, number][] = Object.entries(data.jobData);
+      const jobList: [string, number | 'SkillName'][] = Object.entries(
+        data.jobData
+      );
       // NOTE:配列の先頭に[ '$init', true ]という値が入ってしまうため削除
       jobList.shift();
 
-      // [['react', 100]]のような二次元配列の[1]番目の数字をソート
+      // [['react', 100]]のような二次元配列の[1]番目の数字を利用しソート
       const sortedJobList = (() => {
         if (sortOrder === '昇順')
           return jobList.sort(
@@ -206,17 +190,91 @@ const Query: QueryResolvers = {
       })();
 
       sortedJobList.forEach((data) => {
-        dataObj['skillName'].push(skillOptions[data[0]].name);
-        dataObj['chartColor'].push(skillOptions[data[0]].transparentColor);
-        dataObj['chartBorderColor'].push(skillOptions[data[0]].color);
+        dataObj['skillName'].push(skillOptionObj[data[0]].name);
+        dataObj['chartColor'].push(skillOptionObj[data[0]].transparentColor);
+        dataObj['chartBorderColor'].push(skillOptionObj[data[0]].color);
         dataObj['jobVacancies'].push(data[1]);
       });
 
-      return acc.concat(dataObj);
+      return acc.concat(dataObj as JobData);
     }, []);
 
-    barChartRrsponse['jobData'] = jobData;
-    return barChartRrsponse;
+    const minDate = await Job.find().sort({ date: 1 }).limit(1);
+    return {
+      scrapingDate: date,
+      /** フロントで使用しているreact-datepickerの関係上dateを使用できる形式に変更して返す
+       * TODO: ここの処理見直したい
+       */
+      minDate: new Date(
+        dayjs(minDate[0].date).add(-9, 'hour').format('')
+      ).toString(),
+      jobData,
+    };
+  },
+  getLineChartList: async (_, { dateRange, skills }) => {
+    const dateRangeNum = (() => {
+      if (dateRange === '1ヶ月') return -30;
+      if (dateRange === '3ヶ月') return -90;
+      return -7;
+    })();
+
+    // 午前3時にデータが更新されるため４時から当日データを参照するようにする(9(日本時間との差分) - 4(午前４時) = 5)
+    const now = dayjs().add(5, 'hour');
+    // ソートに使用する
+    const endDate = now.format('YYYY-MM-DD');
+    const startDate = dayjs(endDate)
+      .add(dateRangeNum, 'day')
+      .format('YYYY-MM-DD');
+
+    const sortDateData: JobType[] = await Job.find({
+      date: {
+        $gte: startDate,
+        $lt: endDate,
+      },
+    });
+
+    const rangeDate: Set<string> = new Set();
+    const siteList: Set<string> = new Set();
+    sortDateData.forEach((data) => {
+      rangeDate.add(dayjs(data.date).format('YYYY/MM/DD'));
+      siteList.add(data.siteName);
+    });
+
+    const jobData = [...siteList].map((siteName) => {
+      // サイトごとにデータをフィルタする
+      const jobSiteData = sortDateData.filter(
+        (data) => data.siteName === siteName
+      );
+      // 最終的にreturnするオブジェクトを定義
+      const jobDataObj = {};
+
+      const skillData = skills.reduce((skillDataArray, skill) => {
+        // 求人数を格納するための配列
+        const jobList = [];
+
+        const chartData = jobSiteData.reduce((chartDataObj, data, i) => {
+          jobList.push(data.jobData[skill]);
+
+          if (i === jobSiteData.length - 1) {
+            chartDataObj['label'] = skillOptionObj[skill].name;
+            chartDataObj['borderColor'] = skillOptionObj[skill].color;
+            chartDataObj['data'] = jobList;
+          }
+          return chartDataObj;
+        }, {} as LineChartSkillData);
+
+        return skillDataArray.concat(chartData);
+      }, [] as LineChartSkillData[]);
+
+      jobDataObj['skillData'] = skillData;
+      jobDataObj['siteName'] = siteName;
+      return jobDataObj as LineChartJobData;
+    });
+
+    return {
+      rangeDate: [...rangeDate],
+      jobData,
+    };
   },
 };
 
