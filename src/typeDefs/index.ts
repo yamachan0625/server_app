@@ -78,6 +78,22 @@ export const typeDefs = gql`
     jobData: [JobData]!
   }
 
+  type LineChartSkillData {
+    label: String!
+    data: [Int]!
+    borderColor: String!
+  }
+
+  type LineChartJobData {
+    siteName: String!
+    skillData: [LineChartSkillData!]!
+  }
+
+  type LineChartResponse {
+    rangeDate: [Date!]!
+    jobData: [LineChartJobData!]!
+  }
+
   type Query {
     user: User
     users: [User]
@@ -88,6 +104,7 @@ export const typeDefs = gql`
     matters: [Matter]
     jobs: [Job]
     getBarChartList(date: Date!, sortOrder: String!): BarChartResponse!
+    getLineChartList(dateRange: String!, skills: [String]!): LineChartResponse!
   }
 
   type Mutation {
