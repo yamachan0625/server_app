@@ -219,8 +219,8 @@ const Query: QueryResolvers = {
     })();
 
     // NOTE: 午前03時にデータが更新されるため0４時から当日データを参照するようにする
-    //       (9(日本時間との差分) + 4(午前４時) = 13(DBが更新されてから当日データにアクセスする))
-    const now = dayjs().add(13, 'hour');
+    //       (9(日本時間との差分) - 4(午前４時) = 5(DBが更新されてから当日データにアクセスする))
+    const now = dayjs().add(5, 'hour');
     // ソートに使用する
     const endDate = now.format('YYYY-MM-DD');
     const startDate = dayjs(endDate)
@@ -229,8 +229,8 @@ const Query: QueryResolvers = {
 
     const sortDateData: JobType[] = await Job.find({
       date: {
-        $gte: startDate,
-        $lt: endDate,
+        $gt: startDate,
+        $lte: endDate,
       },
     });
 
