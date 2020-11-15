@@ -227,12 +227,16 @@ const Query: QueryResolvers = {
       .add(dateRangeNum, 'day')
       .format('YYYY-MM-DD');
 
+    console.log({ endDate });
+    console.log({ startDate });
+
+    // 日付で範囲指定し日付で昇順にソートする
     const sortDateData: JobType[] = await Job.find({
       date: {
         $gt: startDate,
         $lte: endDate,
       },
-    });
+    }).sort({ date: 1 });
 
     const rangeDate: Set<string> = new Set();
     const siteList: Set<string> = new Set();
