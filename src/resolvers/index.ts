@@ -106,7 +106,7 @@ const skillOptionObj = {
     color: 'rgba(142, 214, 251, 1)',
     transparentColor: 'rgba(142, 214, 251, 0.5)',
   },
-};
+} as const;
 
 const Query: QueryResolvers = {
   user: async (_, args, { req }) => {
@@ -218,8 +218,9 @@ const Query: QueryResolvers = {
       return -7;
     })();
 
-    // 午前3時にデータが更新されるため４時から当日データを参照するようにする(9(日本時間との差分) - 4(午前４時) = 5)
-    const now = dayjs().add(5, 'hour');
+    // NOTE: 午前03時にデータが更新されるため0４時から当日データを参照するようにする
+    //       (9(日本時間との差分) + 4(午前４時) = 13(DBが更新されてから当日データにアクセスする))
+    const now = dayjs().add(13, 'hour');
     // ソートに使用する
     const endDate = now.format('YYYY-MM-DD');
     const startDate = dayjs(endDate)
@@ -250,15 +251,15 @@ const Query: QueryResolvers = {
 
       const skillData = skills.reduce((skillDataArray, skill) => {
         // 求人数を格納するための配列
-        const jobList = [];
+        const jobVacanciesArray = [];
 
         const chartData = jobSiteData.reduce((chartDataObj, data, i) => {
-          jobList.push(data.jobData[skill]);
+          jobVacanciesArray.push(data.jobData[skill]);
 
           if (i === jobSiteData.length - 1) {
             chartDataObj['label'] = skillOptionObj[skill].name;
             chartDataObj['borderColor'] = skillOptionObj[skill].color;
-            chartDataObj['data'] = jobList;
+            chartDataObj['data'] = jobVacanciesArray;
           }
           return chartDataObj;
         }, {} as LineChartSkillData);
