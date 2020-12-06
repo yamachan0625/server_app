@@ -418,12 +418,12 @@ const Mutation: MutationResolvers = {
 
     const isEqual = await bcrypt.compare(args.currentPassword, user.password);
     if (!isEqual) {
-      throw new Error('パスワードが間違っています');
+      throw new Error('現在のパスワードが間違っています');
     }
 
     const newPassword = (() => {
       if (args.confirmNewPassword === args.newPassword) return args.newPassword;
-      throw new Error('パスワードが一致しません');
+      throw new Error('新しいパスワードが一致しません');
     })();
 
     const hashedPassword = await bcrypt.hash(newPassword, 12);
