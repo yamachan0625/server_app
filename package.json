@@ -18,7 +18,7 @@
   "dependencies": {
     "altair-express-middleware": "^2.5.0",
     "apollo-server-express": "^2.17.0",
-    "axios": "^0.20.0",
+    "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
     "connect": "^3.7.0",
     "cookie-parser": "^1.4.5",
