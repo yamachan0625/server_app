@@ -3,19 +3,6 @@ import { gql } from 'apollo-server-express';
 export const typeDefs = gql`
   scalar Date
 
-  type Director {
-    id: ID!
-    name: String
-    age: Int
-  }
-
-  type Movie {
-    id: ID!
-    name: String
-    genre: String
-    directorId: String
-  }
-
   type RefreshToken {
     hash: String!
     expiry: Date!
@@ -32,10 +19,6 @@ export const typeDefs = gql`
     userId: ID!
     token: String!
     refreshToken: String!
-  }
-
-  type Matter {
-    numberOfCase: Int
   }
 
   type SkillName {
@@ -96,12 +79,6 @@ export const typeDefs = gql`
 
   type Query {
     user: User
-    users: [User]
-    movie(id: ID): Movie
-    director: Director
-    movies: [Movie]
-    directors: [Director]
-    matters: [Matter]
     jobs: [Job]
     getBarChartList(date: Date!, sortOrder: String!): BarChartResponse!
     getLineChartList(dateRange: String!, skills: [String]!): LineChartResponse!
@@ -115,9 +92,5 @@ export const typeDefs = gql`
       newPassword: String!
       confirmNewPassword: String!
     ): User!
-    addMovoie(name: String!, genre: String!, directorId: ID): Movie!
-    updateMovie(id: ID!, name: String, genre: String, directorId: Int): Movie!
-    deleteMovie(id: ID!): Movie!
-    addDirector(name: String, age: Int): Director!
   }
 `;
