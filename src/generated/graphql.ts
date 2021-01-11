@@ -14,21 +14,6 @@ export type Scalars = {
 };
 
 
-export type Director = {
-  __typename?: 'Director';
-  id: Scalars['ID'];
-  name?: Maybe<Scalars['String']>;
-  age?: Maybe<Scalars['Int']>;
-};
-
-export type Movie = {
-  __typename?: 'Movie';
-  id: Scalars['ID'];
-  name?: Maybe<Scalars['String']>;
-  genre?: Maybe<Scalars['String']>;
-  directorId?: Maybe<Scalars['String']>;
-};
-
 export type RefreshToken = {
   __typename?: 'RefreshToken';
   hash: Scalars['String'];
@@ -48,11 +33,6 @@ export type Auth = {
   userId: Scalars['ID'];
   token: Scalars['String'];
   refreshToken: Scalars['String'];
-};
-
-export type Matter = {
-  __typename?: 'Matter';
-  numberOfCase?: Maybe<Scalars['Int']>;
 };
 
 export type SkillName = {
@@ -121,20 +101,9 @@ export type LineChartResponse = {
 export type Query = {
   __typename?: 'Query';
   user?: Maybe<User>;
-  users?: Maybe<Array<Maybe<User>>>;
-  movie?: Maybe<Movie>;
-  director?: Maybe<Director>;
-  movies?: Maybe<Array<Maybe<Movie>>>;
-  directors?: Maybe<Array<Maybe<Director>>>;
-  matters?: Maybe<Array<Maybe<Matter>>>;
   jobs?: Maybe<Array<Maybe<Job>>>;
   getBarChartList: BarChartResponse;
   getLineChartList: LineChartResponse;
-};
-
-
-export type QueryMovieArgs = {
-  id?: Maybe<Scalars['ID']>;
 };
 
 
@@ -154,10 +123,6 @@ export type Mutation = {
   signup: Auth;
   login: Auth;
   changePassword: User;
-  addMovoie: Movie;
-  updateMovie: Movie;
-  deleteMovie: Movie;
-  addDirector: Director;
 };
 
 
@@ -177,32 +142,6 @@ export type MutationChangePasswordArgs = {
   currentPassword: Scalars['String'];
   newPassword: Scalars['String'];
   confirmNewPassword: Scalars['String'];
-};
-
-
-export type MutationAddMovoieArgs = {
-  name: Scalars['String'];
-  genre: Scalars['String'];
-  directorId?: Maybe<Scalars['ID']>;
-};
-
-
-export type MutationUpdateMovieArgs = {
-  id: Scalars['ID'];
-  name?: Maybe<Scalars['String']>;
-  genre?: Maybe<Scalars['String']>;
-  directorId?: Maybe<Scalars['Int']>;
-};
-
-
-export type MutationDeleteMovieArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type MutationAddDirectorArgs = {
-  name?: Maybe<Scalars['String']>;
-  age?: Maybe<Scalars['Int']>;
 };
 
 
@@ -284,16 +223,13 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Date: ResolverTypeWrapper<Scalars['Date']>;
-  Director: ResolverTypeWrapper<Director>;
-  ID: ResolverTypeWrapper<Scalars['ID']>;
-  String: ResolverTypeWrapper<Scalars['String']>;
-  Int: ResolverTypeWrapper<Scalars['Int']>;
-  Movie: ResolverTypeWrapper<Movie>;
   RefreshToken: ResolverTypeWrapper<RefreshToken>;
+  String: ResolverTypeWrapper<Scalars['String']>;
   User: ResolverTypeWrapper<User>;
+  ID: ResolverTypeWrapper<Scalars['ID']>;
   Auth: ResolverTypeWrapper<Auth>;
-  Matter: ResolverTypeWrapper<Matter>;
   SkillName: ResolverTypeWrapper<SkillName>;
+  Int: ResolverTypeWrapper<Scalars['Int']>;
   Job: ResolverTypeWrapper<Job>;
   JobData: ResolverTypeWrapper<JobData>;
   BarChartResponse: ResolverTypeWrapper<BarChartResponse>;
@@ -308,16 +244,13 @@ export type ResolversTypes = {
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Date: Scalars['Date'];
-  Director: Director;
-  ID: Scalars['ID'];
-  String: Scalars['String'];
-  Int: Scalars['Int'];
-  Movie: Movie;
   RefreshToken: RefreshToken;
+  String: Scalars['String'];
   User: User;
+  ID: Scalars['ID'];
   Auth: Auth;
-  Matter: Matter;
   SkillName: SkillName;
+  Int: Scalars['Int'];
   Job: Job;
   JobData: JobData;
   BarChartResponse: BarChartResponse;
@@ -332,21 +265,6 @@ export type ResolversParentTypes = {
 export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Date'], any> {
   name: 'Date';
 }
-
-export type DirectorResolvers<ContextType = any, ParentType extends ResolversParentTypes['Director'] = ResolversParentTypes['Director']> = {
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  age?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
-};
-
-export type MovieResolvers<ContextType = any, ParentType extends ResolversParentTypes['Movie'] = ResolversParentTypes['Movie']> = {
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  genre?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  directorId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
-};
 
 export type RefreshTokenResolvers<ContextType = any, ParentType extends ResolversParentTypes['RefreshToken'] = ResolversParentTypes['RefreshToken']> = {
   hash?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -366,11 +284,6 @@ export type AuthResolvers<ContextType = any, ParentType extends ResolversParentT
   userId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   refreshToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
-};
-
-export type MatterResolvers<ContextType = any, ParentType extends ResolversParentTypes['Matter'] = ResolversParentTypes['Matter']> = {
-  numberOfCase?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
@@ -439,12 +352,6 @@ export type LineChartResponseResolvers<ContextType = any, ParentType extends Res
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
-  users?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
-  movie?: Resolver<Maybe<ResolversTypes['Movie']>, ParentType, ContextType, RequireFields<QueryMovieArgs, never>>;
-  director?: Resolver<Maybe<ResolversTypes['Director']>, ParentType, ContextType>;
-  movies?: Resolver<Maybe<Array<Maybe<ResolversTypes['Movie']>>>, ParentType, ContextType>;
-  directors?: Resolver<Maybe<Array<Maybe<ResolversTypes['Director']>>>, ParentType, ContextType>;
-  matters?: Resolver<Maybe<Array<Maybe<ResolversTypes['Matter']>>>, ParentType, ContextType>;
   jobs?: Resolver<Maybe<Array<Maybe<ResolversTypes['Job']>>>, ParentType, ContextType>;
   getBarChartList?: Resolver<ResolversTypes['BarChartResponse'], ParentType, ContextType, RequireFields<QueryGetBarChartListArgs, 'date' | 'sortOrder'>>;
   getLineChartList?: Resolver<ResolversTypes['LineChartResponse'], ParentType, ContextType, RequireFields<QueryGetLineChartListArgs, 'dateRange' | 'skills'>>;
@@ -454,20 +361,13 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   signup?: Resolver<ResolversTypes['Auth'], ParentType, ContextType, RequireFields<MutationSignupArgs, 'email' | 'password'>>;
   login?: Resolver<ResolversTypes['Auth'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password'>>;
   changePassword?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationChangePasswordArgs, 'currentPassword' | 'newPassword' | 'confirmNewPassword'>>;
-  addMovoie?: Resolver<ResolversTypes['Movie'], ParentType, ContextType, RequireFields<MutationAddMovoieArgs, 'name' | 'genre'>>;
-  updateMovie?: Resolver<ResolversTypes['Movie'], ParentType, ContextType, RequireFields<MutationUpdateMovieArgs, 'id'>>;
-  deleteMovie?: Resolver<ResolversTypes['Movie'], ParentType, ContextType, RequireFields<MutationDeleteMovieArgs, 'id'>>;
-  addDirector?: Resolver<ResolversTypes['Director'], ParentType, ContextType, RequireFields<MutationAddDirectorArgs, never>>;
 };
 
 export type Resolvers<ContextType = any> = {
   Date?: GraphQLScalarType;
-  Director?: DirectorResolvers<ContextType>;
-  Movie?: MovieResolvers<ContextType>;
   RefreshToken?: RefreshTokenResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   Auth?: AuthResolvers<ContextType>;
-  Matter?: MatterResolvers<ContextType>;
   SkillName?: SkillNameResolvers<ContextType>;
   Job?: JobResolvers<ContextType>;
   JobData?: JobDataResolvers<ContextType>;

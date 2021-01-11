@@ -3,10 +3,7 @@ import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 import dayjs from 'dayjs';
 
-import { Movie } from '../models/movie';
-import { Director } from '../models/director';
 import { User } from '../models/user';
-import { Matter } from '../models/matter';
 import { Job } from '../models/job';
 import {
   QueryResolvers,
@@ -115,34 +112,6 @@ const Query: QueryResolvers = {
       throw new Error('ユーザーは存在しません');
     }
     return user;
-  },
-  users: async () => {
-    const users = await User.find({});
-    return users;
-  },
-  movie: async (_, args) => {
-    const movie = await Movie.findById(args.id);
-    return movie;
-  },
-  movies: async () => {
-    const movies = await Movie.find({});
-    return movies;
-  },
-  director: async (_, args: any) => {
-    const director = await Director.findById(args.id);
-    return director;
-  },
-  directors: async () => {
-    const directors = await Director.find({});
-    return directors;
-  },
-  matters: async () => {
-    const matters = await Matter.find({});
-    return matters;
-  },
-  jobs: async () => {
-    const jobs = await Job.find({});
-    return jobs;
   },
   getBarChartList: async (
     _,
@@ -281,33 +250,6 @@ const Query: QueryResolvers = {
 };
 
 const Mutation: MutationResolvers = {
-  addMovoie: async (_, args) => {
-    const movie = new Movie({
-      name: args.name,
-      genre: args.genre,
-      directorId: args.directorId || 'default',
-    });
-    return movie.save();
-  },
-  updateMovie: async (_, args) => {
-    const updateMovie = new Object();
-    Object.keys(args).forEach((arg) => {
-      updateMovie[arg] = args[arg];
-    });
-    return Movie.findByIdAndUpdate(args.id, updateMovie, {
-      new: true,
-    });
-  },
-  deleteMovie: async (_, args) => {
-    return Movie.findByIdAndDelete(args.id);
-  },
-  addDirector: async (_, args) => {
-    const director = new Movie({
-      name: args.name,
-      age: args.age,
-    });
-    return director.save();
-  },
   signup: async (_, args, { res }) => {
     try {
       const existingUser = await User.findOne({
